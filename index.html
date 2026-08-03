@@ -15,149 +15,30 @@
 <body>
 
     <div class="container">
-        <header class="no-print">
+        <header>
             <h1>Mii mama Home</h1>
             <p>ប្រព័ន្ធជំនួយការ និងឧបករណ៍គ្រប់គ្រងឯកសាររបស់អ្នក</p>
         </header>
 
-        <!-- ផ្នែកម៉ឺនុយប្រអប់ផ្ដេក (1, 2, 3, 4) -->
-        <div class="menu-accordion-grid no-print">
+        <!-- ម៉ឺនុយធំទាំង ២ សម្រាប់ចុចចូលផ្ទាំងថ្មី -->
+        <div class="dashboard-menu">
             
-            <!-- ប្រអប់ទី ១: Converter -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion('section1', this)">
-                    <span>📁 ១. Converter</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="accordion-content" id="section1">
-                    <div class="tools-grid">
-                        <a href="https://www.ilovepdf.com/pdf_to_word" target="_blank" class="tool-card">
-                            <div class="icon red">W</div>
-                            <h3>PDF to Word</h3>
-                            <p>បម្លែងហ្វាល PDF ទៅជា Word ។</p>
-                        </a>
-                        <a href="https://www.ilovepdf.com/pdf_to_excel" target="_blank" class="tool-card">
-                            <div class="icon green">X</div>
-                            <h3>PDF to Excel</h3>
-                            <p>ទាញទិន្នន័យពី PDF ទៅជា Excel ។</p>
-                        </a>
-                        <a href="https://www.ilovepdf.com/merge_pdf" target="_blank" class="tool-card">
-                            <div class="icon orange">M</div>
-                            <h3>Merge PDF</h3>
-                            <p>បញ្ចូលហ្វាល PDF ជាហ្វាលតែមួយ។</p>
-                        </a>
-                        <a href="https://www.ilovepdf.com/split_pdf" target="_blank" class="tool-card">
-                            <div class="icon red">S</div>
-                            <h3>Split PDF</h3>
-                            <p>កាត់ពុះចែកហ្វាល PDF ជាទំព័រ។</p>
-                        </a>
-                        <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" class="tool-card">
-                            <div class="icon green">C</div>
-                            <h3>Compress PDF</h3>
-                            <p>បង្រួមហ្វាល PDF ឱ្យមានទំហំតូច។</p>
-                        </a>
-                        <a href="https://www.ilovepdf.com/word_to_pdf" target="_blank" class="tool-card">
-                            <div class="icon blue">PDF</div>
-                            <h3>Word to PDF</h3>
-                            <p>បម្លែងឯកសារ Word ទៅជា PDF។</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!-- ម៉ឺនុយទី ១: ទៅកាន់ផ្ទាំង Converter -->
+            <a href="converter.html" class="menu-card">
+                <div class="menu-icon red">📁</div>
+                <h2>Converter Tools</h2>
+                <p>ប្រមូលផ្ដុំឧបករណ៍បម្លែងហ្វាល PDF និង Word ទាំង ៦។</p>
+            </a>
 
-            <!-- ប្រអប់ទី ២: Invoice Generator -->
-            <div class="accordion-item">
-                <div class="accordion-header active-header" onclick="toggleAccordion('section2', this)">
-                    <span>🧾 ២. Invoice Generator</span>
-                    <span class="arrow">▲</span>
-                </div>
-                <div class="accordion-content open-content" id="section2">
-                    <div class="invoice-form">
-                        <div class="form-row no-print">
-                            <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
-                            <input type="text" id="itemUnit" placeholder="ឯកតា" style="width: 80px;">
-                            <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 70px;">
-                            <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 90px;">
-                            <button id="addItemBtn" class="action-btn">បន្ថែម</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ប្រអប់ទី ៣: សម្រាប់មុខងារអនាគត -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion('section3', this)">
-                    <span>📦 ៣. មុខងារផ្សេងៗ</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="accordion-content" id="section3">
-                    <p style="color: #777; font-size: 13px; text-align: center; margin: 10px 0;">រង់ចាំដាក់បញ្ចូលមុខងារថ្មីៗបន្ថែម...</p>
-                </div>
-            </div>
-
-            <!-- ប្រអប់ទី ៤: សម្រាប់មុខងារអនាគត -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion('section4', this)">
-                    <span>⚙️ ៤. ការកំណត់</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="accordion-content" id="section4">
-                    <p style="color: #777; font-size: 13px; text-align: center; margin: 10px 0;">រង់ចាំដាក់បញ្ចូលមុខងារថ្មីៗបន្ថែម...</p>
-                </div>
-            </div>
+            <!-- ម៉ឺនុយទី ២: ទៅកាន់ផ្ទាំងបង្កើតវិក្កយបត្រ -->
+            <a href="invoice.html" class="menu-card">
+                <div class="menu-icon blue">🧾</div>
+                <h2>ការបង្កើតវិក្កយបត្រ (Invoice Generator)</h2>
+                <p>បង្កើត និងទាញយកវិក្កយបត្រជាទម្រង់ PDF យ៉ាងងាយស្រួល។</p>
+            </a>
 
         </div>
-
-        <!-- ផ្នែកបង្ហាញតារាងវិក្កយបត្រ (Invoice Display) -->
-        <div class="folder-section">
-            <div class="invoice-form">
-                <div id="invoice-content" class="invoice-box">
-                    <div class="inv-title">វិក្កយបត្រ</div>
-                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDate"></span></div>
-
-                    <table class="inv-table">
-                        <thead>
-                            <tr>
-                                <th>លរ</th>
-                                <th>បរិយាយ</th>
-                                <th>បរិមាណ</th>
-                                <th>ឯកតា</th>
-                                <th>តម្លៃ ($)</th>
-                                <th>តម្លៃសរុប ($)</th>
-                                <th>ផ្សេងៗ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoiceTableBody">
-                            <!-- Items will appear here -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="total-row">
-                                <td colspan="5" style="text-align: right; font-weight: bold;">សរុបទឹកប្រាក់ (USD)</td>
-                                <td colspan="2" id="grandTotal" style="font-weight: bold; text-align: left; padding-left: 10px;">$ 0.00</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <div class="inv-signatures">
-                        <div class="sig-box">
-                            <p>រៀបចំដោយ:</p>
-                            <br><br>
-                            <p>........................................</p>
-                        </div>
-                        <div class="sig-box">
-                            <p>ទទួលដោយ:</p>
-                            <br><br>
-                            <p>........................................</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="downloadPdfBtn" class="download-btn no-print">ទាញយកជា PDF (Save as PDF)</button>
-            </div>
-        </div>
-
     </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
