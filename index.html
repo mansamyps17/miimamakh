@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <!-- ផ្នែកទី ២៖ Invoice Generator (ដាក់ដាច់ដោយឡែកនៅខាងក្រៅ មិននៅជាប់ Converter ទេ) -->
+        <!-- ផ្នែកទី ២៖ Invoice Generator -->
         <div class="folder-section" style="margin-top: 25px;">
             <div class="folder-header">
                 <h2>🧾 បង្កើតវិក្កយបត្រ (Invoice Generator)</h2>
@@ -72,37 +72,51 @@
             <div class="invoice-form">
                 <div class="form-row">
                     <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
+                    <input type="text" id="itemUnit" placeholder="ឯកតា (ឧ. ឈុត, ដុំ)" style="width: 100px;">
                     <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 80px;">
                     <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 100px;">
                     <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
                 </div>
 
-                <!-- កន្លែងបង្ហាញទម្រង់ Invoice សម្រាប់ Print/PDF -->
+                <!-- កន្លែងបង្ហាញទម្រង់ Invoice ស្រដៀងក្នុងរូប mẫu -->
                 <div id="invoice-content" class="invoice-box">
-                    <div class="inv-header">
-                        <h2>វិក្កយបត្រ (INVOICE)</h2>
-                        <p>កាលបរិច្ឆេទ: <span id="invDate"></span></p>
-                    </div>
+                    <div class="inv-title">វិក្កយបត្រ</div>
+                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDate"></span></div>
+
                     <table class="inv-table">
                         <thead>
                             <tr>
                                 <th>លរ</th>
-                                <th>បរិយាយ (Name of Goods)</th>
+                                <th>បរិយាយ</th>
                                 <th>បរិមាណ</th>
-                                <th>តម្លៃរាយ</th>
+                                <th>ឯកតា</th>
+                                <th>តម្លៃ ($)</th>
                                 <th>តម្លៃសរុប ($)</th>
+                                <th>ផ្សេងៗ</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody">
                             <!-- Items will appear here -->
                         </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="5" style="text-align: right; font-weight: bold;">សរុបទឹកប្រាក់ (USD)</td>
+                                <td colspan="2" id="grandTotal" style="font-weight: bold; text-align: left; padding-left: 10px;">$ 0.00</td>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <div class="inv-total">
-                        <h3>សរុបទឹកប្រាក់ TOTAL: $<span id="grandTotal">0.00</span></h3>
-                    </div>
-                    <div class="inv-footer">
-                        <p>អ្នកទិញ / The Buyer</p>
-                        <p>អ្នកលក់ / The Seller</p>
+
+                    <div class="inv-signatures">
+                        <div class="sig-box">
+                            <p>រៀបចំដោយ:</p>
+                            <br><br>
+                            <p>........................................</p>
+                        </div>
+                        <div class="sig-box">
+                            <p>ទទួលដោយ:</p>
+                            <br><br>
+                            <p>........................................</p>
+                        </div>
                     </div>
                 </div>
 
