@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mii mama Home - Invoice Generator</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link no-print">← ត្រឡប់ក្រោយ (Back)</a>
+            <h1>🧾 វិក្កយបត្រ (Invoice Generator)</h1>
+            <p>បញ្ចូលទំនិញ និងទាញយកជា PDF</p>
+        </header>
+
+        <div class="folder-section">
+            <div class="invoice-form">
+                <div class="form-row no-print">
+                    <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
+                    <input type="text" id="itemUnit" placeholder="ឯកតា (ឧ. ដុំ, ឈុត)" style="width: 110px;">
+                    <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 80px;">
+                    <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 100px;">
+                    <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
+                </div>
+
+                <!-- ប្រអប់បង្ហាញទម្រង់វិក្កយបត្រ -->
+                <div id="invoice-content" class="invoice-box">
+                    <div class="inv-title">វិក្កយបត្រ</div>
+                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDate"></span></div>
+
+                    <table class="inv-table">
+                        <thead>
+                            <tr>
+                                <th>លរ</th>
+                                <th>បរិយាយ</th>
+                                <th>បរិមាណ</th>
+                                <th>ឯកតា</th>
+                                <th>តម្លៃ ($)</th>
+                                <th>តម្លៃសរុប ($)</th>
+                                <th>ផ្សេងៗ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceTableBody">
+                            <!-- Items will appear here -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="5" style="text-align: right; font-weight: bold;">សរុបទឹកប្រាក់ (USD)</td>
+                                <td colspan="2" id="grandTotal" style="font-weight: bold; text-align: left; padding-left: 10px;">$ 0.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="inv-signatures">
+                        <div class="sig-box">
+                            <p>រៀបចំដោយ:</p>
+                            <br><br>
+                            <p>........................................</p>
+                        </div>
+                        <div class="sig-box">
+                            <p>ទទួលដោយ:</p>
+                            <br><br>
+                            <p>........................................</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="downloadPdfBtn" class="download-btn no-print">ទាញយកជា PDF (Save as PDF)</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
