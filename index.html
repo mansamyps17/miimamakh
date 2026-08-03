@@ -10,9 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- html2pdf Library សម្រាប់ទាញយកជា PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -70,7 +67,7 @@
             </div>
 
             <div class="invoice-form">
-                <div class="form-row">
+                <div class="form-row no-print">
                     <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
                     <input type="text" id="itemUnit" placeholder="ឯកតា (ឧ. ឈុត, ដុំ)" style="width: 100px;">
                     <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 80px;">
@@ -78,7 +75,7 @@
                     <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
                 </div>
 
-                <!-- កន្លែងបង្ហាញទម្រង់ Invoice ស្រដៀងក្នុងរូប mẫu -->
+                <!-- កន្លែងបង្ហាញទម្រង់ Invoice សម្រាប់ Print/PDF -->
                 <div id="invoice-content" class="invoice-box">
                     <div class="inv-title">វិក្កយបត្រ</div>
                     <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDate"></span></div>
@@ -120,7 +117,7 @@
                     </div>
                 </div>
 
-                <button id="downloadPdfBtn" class="download-btn">ទាញយកជា PDF (Download PDF)</button>
+                <button id="downloadPdfBtn" class="download-btn no-print">ទាញយកជា PDF (Save as PDF)</button>
             </div>
         </div>
 
