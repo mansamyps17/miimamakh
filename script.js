@@ -60,6 +60,5 @@ document.getElementById('downloadPdfBtn').addEventListener('click', function() {
         return;
     }
     
-    // បើកផ្ទាំង Print របស់ Browser ដែលអ្នកអាចជ្រើសរើស "Save as PDF" បានយ៉ាងត្រូវទ្រង់ទ្រាយ ១០០%
     window.print();
 });
