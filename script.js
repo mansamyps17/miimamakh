@@ -5,6 +5,20 @@ const formattedDate = String(today.getDate()).padStart(2, '0') + '-' +
                       today.getFullYear();
 document.getElementById('invDate').textContent = formattedDate;
 
+// មុខងារចុចដើម្បី បើក/បិទ (Toggle) ប្រអប់ Converter
+document.getElementById('toggleConverter').addEventListener('click', function() {
+    const grid = document.getElementById('converterGrid');
+    const icon = document.getElementById('toggleIcon');
+    
+    if (grid.style.display === 'none') {
+        grid.style.display = 'grid';
+        icon.textContent = '▲';
+    } else {
+        grid.style.display = 'none';
+        icon.textContent = '▼';
+    }
+});
+
 let invoiceItems = [];
 
 document.getElementById('addItemBtn').addEventListener('click', function() {
