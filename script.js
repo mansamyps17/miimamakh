@@ -1,10 +1,15 @@
-// បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះស្វ័យប្រវត្តិ
-document.getElementById('invDate').textContent = new Date().toLocaleDateString('km-KH');
+// បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះស្វ័យប្រវត្តិ (ទម្រង់ DD-MM-YYYY)
+const today = new Date();
+const formattedDate = String(today.getDate()).padStart(2, '0') + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      today.getFullYear();
+document.getElementById('invDate').textContent = formattedDate;
 
 let invoiceItems = [];
 
 document.getElementById('addItemBtn').addEventListener('click', function() {
     const name = document.getElementById('itemName').value.trim();
+    const unit = document.getElementById('itemUnit').value.trim();
     const qty = parseFloat(document.getElementById('itemQty').value) || 1;
     const price = parseFloat(document.getElementById('itemPrice').value) || 0;
 
@@ -14,12 +19,13 @@ document.getElementById('addItemBtn').addEventListener('click', function() {
     }
 
     const total = qty * price;
-    invoiceItems.push({ name, qty, price, total });
+    invoiceItems.push({ name, unit, qty, price, total });
 
     renderInvoice();
 
     // សម្អាតช่องបញ្ចូល
     document.getElementById('itemName').value = "";
+    document.getElementById('itemUnit').value = "";
     document.getElementById('itemPrice').value = "";
     document.getElementById('itemQty').value = "1";
 });
@@ -34,15 +40,17 @@ function renderInvoice() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td style="text-align: left; padding-left: 10px;">${item.name}</td>
+            <td style="text-align: left; padding-left: 8px;">${item.name}</td>
             <td>${item.qty}</td>
-            <td>$${item.price.toFixed(2)}</td>
-            <td>$${item.total.toFixed(2)}</td>
+            <td>${item.unit}</td>
+            <td>$ ${item.price.toFixed(2)}</td>
+            <td>$ ${item.total.toFixed(2)}</td>
+            <td></td>
         `;
         tbody.appendChild(tr);
     });
 
-    document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+    document.getElementById('grandTotal').textContent = "$ " + grandTotal.toFixed(2);
 }
 
 // មុខងារទាញយកជា PDF
@@ -54,8 +62,8 @@ document.getElementById('downloadPdfBtn').addEventListener('click', function() {
 
     const element = document.getElementById('invoice-content');
     const opt = {
-        margin:       0.5,
-        filename:     'invoice.pdf',
+        margin:       0.3,
+        filename:     'Invoice_A4.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
