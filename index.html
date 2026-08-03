@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mii mama Home - ជំនួយការផ្ទាល់ខ្លួន</title>
+    
+    <!-- Google Fonts: Khmer Battambang -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- html2pdf Library សម្រាប់ទាញយកជា PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Mii mama Home</h1>
+            <p>ប្រព័ន្ធជំនួយការ និងឧបករណ៍គ្រប់គ្រងឯកសាររបស់អ្នក</p>
+        </header>
+
+        <!-- ផ្នែកទី ១៖ Folder Converter (6 Tools) -->
+        <div class="folder-section">
+            <div class="folder-header">
+                <h2>📁 Converter</h2>
+            </div>
+            
+            <div class="tools-grid">
+                <a href="https://www.ilovepdf.com/pdf_to_word" target="_blank" class="tool-card">
+                    <div class="icon red">W</div>
+                    <h3>PDF to Word</h3>
+                    <p>បម្លែងហ្វាល PDF ទៅជា Word យ៉ាងងាយស្រួល។</p>
+                </a>
+                <a href="https://www.ilovepdf.com/pdf_to_excel" target="_blank" class="tool-card">
+                    <div class="icon green">X</div>
+                    <h3>PDF to Excel</h3>
+                    <p>ទាញទិន្នន័យពី PDF ទៅជា Excel។</p>
+                </a>
+                <a href="https://www.ilovepdf.com/merge_pdf" target="_blank" class="tool-card">
+                    <div class="icon orange">M</div>
+                    <h3>Merge PDF</h3>
+                    <p>បញ្ចូលហ្វាល PDF ជាហ្វាលតែមួយ។</p>
+                </a>
+                <a href="https://www.ilovepdf.com/split_pdf" target="_blank" class="tool-card">
+                    <div class="icon red">S</div>
+                    <h3>Split PDF</h3>
+                    <p>កាត់ពុះចែកហ្វាល PDF ជាទំព័រ។</p>
+                </a>
+                <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" class="tool-card">
+                    <div class="icon green">C</div>
+                    <h3>Compress PDF</h3>
+                    <p>បង្រួមហ្វាល PDF ឱ្យមានទំហំតូច។</p>
+                </a>
+                <a href="https://www.ilovepdf.com/word_to_pdf" target="_blank" class="tool-card">
+                    <div class="icon blue">PDF</div>
+                    <h3>Word to PDF</h3>
+                    <p>បម្លែងឯកសារ Word ទៅជា PDF។</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- ផ្នែកទី ២៖ Invoice Generator (ដាក់ដាច់ដោយឡែកនៅខាងក្រៅ មិននៅជាប់ Converter ទេ) -->
+        <div class="folder-section" style="margin-top: 25px;">
+            <div class="folder-header">
+                <h2>🧾 បង្កើតវិក្កយបត្រ (Invoice Generator)</h2>
+            </div>
+
+            <div class="invoice-form">
+                <div class="form-row">
+                    <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
+                    <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 80px;">
+                    <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 100px;">
+                    <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
+                </div>
+
+                <!-- កន្លែងបង្ហាញទម្រង់ Invoice សម្រាប់ Print/PDF -->
+                <div id="invoice-content" class="invoice-box">
+                    <div class="inv-header">
+                        <h2>វិក្កយបត្រ (INVOICE)</h2>
+                        <p>កាលបរិច្ឆេទ: <span id="invDate"></span></p>
+                    </div>
+                    <table class="inv-table">
+                        <thead>
+                            <tr>
+                                <th>លរ</th>
+                                <th>បរិយាយ (Name of Goods)</th>
+                                <th>បរិមាណ</th>
+                                <th>តម្លៃរាយ</th>
+                                <th>តម្លៃសរុប ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceTableBody">
+                            <!-- Items will appear here -->
+                        </tbody>
+                    </table>
+                    <div class="inv-total">
+                        <h3>សរុបទឹកប្រាក់ TOTAL: $<span id="grandTotal">0.00</span></h3>
+                    </div>
+                    <div class="inv-footer">
+                        <p>អ្នកទិញ / The Buyer</p>
+                        <p>អ្នកលក់ / The Seller</p>
+                    </div>
+                </div>
+
+                <button id="downloadPdfBtn" class="download-btn">ទាញយកជា PDF (Download PDF)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
