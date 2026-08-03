@@ -53,21 +53,13 @@ function renderInvoice() {
     document.getElementById('grandTotal').textContent = "$ " + grandTotal.toFixed(2);
 }
 
-// មុខងារទាញយកជា PDF
+// មុខងារ Print / Save PDF យ៉ាងល្អឥតខ្ចោះ
 document.getElementById('downloadPdfBtn').addEventListener('click', function() {
     if (invoiceItems.length === 0) {
         alert("សូមបន្ថែមទំនិញយ៉ាងហោចណាស់មួយមុននឹងទាញយក PDF!");
         return;
     }
-
-    const element = document.getElementById('invoice-content');
-    const opt = {
-        margin:       0.3,
-        filename:     'Invoice_A4.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().from(element).set(opt).save();
+    
+    // បើកផ្ទាំង Print របស់ Browser ដែលអ្នកអាចជ្រើសរើស "Save as PDF" បានយ៉ាងត្រូវទ្រង់ទ្រាយ ១០០%
+    window.print();
 });
