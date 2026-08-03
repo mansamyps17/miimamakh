@@ -167,19 +167,23 @@ header p {
 }
 
 .inv-table th, .inv-table td {
-    border: 1px solid #333;
+    border: 1px solid #333 !important;
     padding: 6px 8px;
     text-align: center;
     font-size: 12px;
 }
 
 .inv-table th {
-    background-color: #f2f2f2;
-    color: #000;
+    background-color: #f2f2f2 !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 .total-row td {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
 }
 
 .inv-signatures {
@@ -212,25 +216,25 @@ header p {
     opacity: 0.9;
 }
 
-/* ពេល Print ឬ Save ជា PDF គឺលាក់ផ្ទាំងផ្សេងៗ ចេញតែវិក្កយបត្រសុទ្ធសាធ */
+/* Print Styles */
 @media print {
     body {
         background-color: white;
         padding: 0;
+        margin: 0;
     }
-    .container > header,
-    .folder-section:first-child,
     .no-print {
         display: none !important;
     }
     .folder-section {
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     .invoice-box {
-        border: none;
-        padding: 0;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 }
