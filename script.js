@@ -1,23 +1,26 @@
-// បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះស្វ័យប្រវត្តិ (ទម្រង់ DD-MM-YYYY)
+// បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះស្វ័យប្រវត្តិ
 const today = new Date();
 const formattedDate = String(today.getDate()).padStart(2, '0') + '-' + 
                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
                       today.getFullYear();
 document.getElementById('invDate').textContent = formattedDate;
 
-// មុខងារចុចដើម្បី បើក/បិទ (Toggle) ប្រអប់ Converter
-document.getElementById('toggleConverter').addEventListener('click', function() {
-    const grid = document.getElementById('converterGrid');
-    const icon = document.getElementById('toggleIcon');
+// មុខងារចុចប្ដូរទម្លាក់ចុះឡើង (Accordion) សម្រាប់ប្រអប់ម៉ឺនុយទាំង ៤
+function toggleAccordion(sectionId, headerElement) {
+    const content = document.getElementById(sectionId);
+    const arrow = headerElement.querySelector('.arrow');
     
-    if (grid.style.display === 'none') {
-        grid.style.display = 'grid';
-        icon.textContent = '▲';
+    // បើក ឬ បិទ Content ជាក់លាក់
+    if (content.style.display === 'block') {
+        content.style.display = 'none';
+        arrow.textContent = '▼';
+        headerElement.classList.remove('active-header');
     } else {
-        grid.style.display = 'none';
-        icon.textContent = '▼';
+        content.style.display = 'block';
+        arrow.textContent = '▲';
+        headerElement.classList.add('active-header');
     }
-});
+}
 
 let invoiceItems = [];
 
@@ -37,7 +40,7 @@ document.getElementById('addItemBtn').addEventListener('click', function() {
 
     renderInvoice();
 
-    // សម្អាតช่องបញ្ចូល
+    // សម្អាតប្រអប់បញ្ចូល
     document.getElementById('itemName').value = "";
     document.getElementById('itemUnit').value = "";
     document.getElementById('itemPrice').value = "";
@@ -67,7 +70,7 @@ function renderInvoice() {
     document.getElementById('grandTotal').textContent = "$ " + grandTotal.toFixed(2);
 }
 
-// មុខងារ Print / Save PDF យ៉ាងល្អឥតខ្ចោះ
+// មុខងារ Print / Save PDF
 document.getElementById('downloadPdfBtn').addEventListener('click', function() {
     if (invoiceItems.length === 0) {
         alert("សូមបន្ថែមទំនិញយ៉ាងហោចណាស់មួយមុននឹងទាញយក PDF!");
