@@ -1,22 +1,22 @@
 body {
     font-family: 'Battambang', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url('background.png'); /* ហ្វាលរូបភាពដែលអ្នកបានដាក់ */
+    background-image: url('background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     margin: 0;
-    padding: 0;
-    min-height: 100vh;
+    padding: 30px 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
 .container {
     width: 100%;
     max-width: 750px;
-    padding: 30px 20px;
+    padding: 0;
     animation: fadeIn 0.8s ease-in-out;
 }
 
@@ -73,7 +73,7 @@ header p {
 }
 
 .menu-card {
-    background: rgba(255, 255, 255, 0.9); /* បន្ថែមភាពថ្លាបន្តិចដើម្បីឱ្យស្អាតជាមួយ Background */
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(5px);
     border: none;
     border-radius: 14px;
@@ -417,17 +417,22 @@ header p {
 @media print {
     @page {
         size: A4;
-        margin-top: 8mm;
-        margin-right: 8mm;
-        margin-bottom: 8mm;
-        margin-left: 8mm;
+        margin: 0mm;
     }
 
     body {
         background-image: none !important;
         background-color: white;
-        padding: 0;
-        margin: 0;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 
     .no-print {
@@ -443,9 +448,11 @@ header p {
 
     .invoice-box {
         border: none !important;
-        padding: 0 !important;
+        padding: 8mm !important;
         margin: 0 !important;
         box-shadow: none !important;
+        width: 100% !important;
+        box-sizing: border-box;
     }
 
     @page {
