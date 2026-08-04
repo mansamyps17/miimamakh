@@ -1,39 +1,39 @@
-// កំណត់កាលបរិច្ឆេទថ្ងៃនេះជាស្វ័យប្រវត្តិពេលចូលមកដល់
-const today = new Date().toISOString().split('T')[0];
 const dateInput = document.getElementById('dateInput');
 const dateDisplay = document.getElementById('invDateDisplay');
 
 if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
-    dateDisplay.textContent = formatDateString(today);
+    if (dateDisplay) {
+        dateDisplay.textContent = formatDateString(today);
+    }
 
-    // ពេលអ្នកប្រើប្រាស់ប្ដូរកាលបរិច្ឆេទ
     dateInput.addEventListener('change', function() {
-        dateDisplay.textContent = formatDateString(this.value);
+        if (dateDisplay) {
+            dateDisplay.textContent = formatDateString(this.value);
+        }
     });
 }
 
 function formatDateString(dateStr) {
     if (!dateStr) return "";
     const parts = dateStr.split('-');
-    return `${parts[2]}-${parts[1]}-${parts[0]}`; // ប្តូរជា DD-MM-YYYY
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
 }
 
-// មុខងារ Upload Logo
 const logoInput = document.getElementById('logoInput');
 if (logoInput) {
     logoInput.addEventListener('change', function(event) {
         const file = event.target.files[0];
         const logoImg = document.getElementById('invoiceLogo');
-        
-        if (file) {
+        if (file && logoImg) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 logoImg.src = e.target.result;
                 logoImg.style.display = 'block';
             }
             reader.readAsDataURL(file);
-        } else {
+        } else if (logoImg) {
             logoImg.style.display = 'none';
         }
     });
@@ -41,7 +41,6 @@ if (logoInput) {
 
 let invoiceItems = [];
 
-// បន្ថែមទំនិញចូលតារាង
 const addItemBtn = document.getElementById('addItemBtn');
 if (addItemBtn) {
     addItemBtn.addEventListener('click', function() {
@@ -89,10 +88,12 @@ function renderInvoice() {
         tbody.appendChild(tr);
     });
 
-    document.getElementById('grandTotal').textContent = "$ " + grandTotal.toFixed(2);
+    const grandTotalElement = document.getElementById('grandTotal');
+    if (grandTotalElement) {
+        grandTotalElement.textContent = "$ " + grandTotal.toFixed(2);
+    }
 }
 
-// មុខងារ Upload និងបង្ហាញរូបភាព Attachments
 const imageInput = document.getElementById('imageInput');
 if (imageInput) {
     imageInput.addEventListener('change', function(event) {
@@ -100,10 +101,10 @@ if (imageInput) {
         const previewContainer = document.getElementById('imagePreviewContainer');
         const attachmentSection = document.getElementById('attachmentSection');
         
-        previewContainer.innerHTML = "";
+        if (previewContainer) previewContainer.innerHTML = "";
 
         if (files.length > 0) {
-            attachmentSection.style.display = 'block';
+            if (attachmentSection) attachmentSection.style.display = 'block';
             
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
@@ -111,17 +112,16 @@ if (imageInput) {
                     const div = document.createElement('div');
                     div.className = 'image-item';
                     div.innerHTML = `<img src="${e.target.result}" alt="Attachment">`;
-                    previewContainer.appendChild(div);
+                    if (previewContainer) previewContainer.appendChild(div);
                 }
                 reader.readAsDataURL(file);
             });
         } else {
-            attachmentSection.style.display = 'none';
+            if (attachmentSection) attachmentSection.style.display = 'none';
         }
     });
 }
 
-// មុខងារ Print / Save PDF ដោយយកឈ្មោះហ្វាលតាមប្រអប់បញ្ចូល
 const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener('click', function() {
@@ -130,9 +130,9 @@ if (downloadPdfBtn) {
             return;
         }
 
-        // កំណត់ឈ្មោះ Title របស់ Document ឱ្យត្រូវនឹងឈ្មោះហ្វាលដែលបានវាយបញ្ចូល
-        const customFileName = document.getElementById('pdfNameInput').value.trim() || "Invoice_A4";
-        document.title = customFileName;
+        const pdfNameInput = document.getElementById('pdfNameInput');
+        const customFileName = pdfNameInput ? pdfNameInput.value.trim() : "Invoice_A4";
+        document.title = customFileName || "Invoice_A4";
 
         window.print();
     });
