@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mii mama Home - Invoice Generator</title>
+    <title>Mii mama Home - ជំនួយការផ្ទាល់ខ្លួន</title>
     
+    <!-- Google Fonts: Khmer Battambang -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap" rel="stylesheet">
@@ -14,109 +15,30 @@
 <body>
 
     <div class="container">
-        <header class="no-print">
-            <a href="index.html" class="back-link">← ត្រឡប់ក្រោយ (Back)</a>
-            <h1>🧾 វិក្កយបត្រ (Invoice Generator)</h1>
-            <p>កំណត់ Logo កាលបរិច្ឆេទ ឈ្មោះហ្វាល និងទំនិញ</p>
+        <header>
+            <h1>Mii mama Home</h1>
+            <p>ប្រព័ន្ធជំនួយការ និងឧបករណ៍គ្រប់គ្រងឯកសាររបស់អ្នក</p>
         </header>
 
-        <div class="folder-section">
-            <div class="invoice-form">
-                
-                <!-- ផ្នែកកំណត់ Logo, កាលបរិច្ឆេទ និងឈ្មោះហ្វាល PDF -->
-                <div class="form-row no-print setting-box">
-                    <div class="setting-group">
-                        <label>🖼️ ដាក់ Logo ក្រុមហ៊ុន:</label>
-                        <input type="file" id="logoInput" accept="image/*">
-                    </div>
-                    <div class="setting-group">
-                        <label>📅 កាលបរិច្ឆេទ:</label>
-                        <input type="date" id="dateInput">
-                    </div>
-                    <div class="setting-group">
-                        <label>📝 ឈ្មោះហ្វាល PDF:</label>
-                        <input type="text" id="pdfNameInput" value="Invoice_A4" placeholder="ឈ្មោះហ្វាល PDF">
-                    </div>
-                </div>
+        <!-- ម៉ឺនុយធំទាំង ២ សម្រាប់ចុចចូលផ្ទាំងថ្មី -->
+        <div class="dashboard-menu">
+            
+            <!-- ម៉ឺនុយទី ១: ទៅកាន់ផ្ទាំង Converter -->
+            <a href="converter.html" class="menu-card">
+                <div class="menu-icon red">📁</div>
+                <h2>Converter Tools</h2>
+                <p>ប្រមូលផ្ដុំឧបករណ៍បម្លែងហ្វាល PDF និង Word ទាំង ៦។</p>
+            </a>
 
-                <!-- ប្រអប់បញ្ចូលទំនិញ -->
-                <div class="form-row no-print">
-                    <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
-                    <input type="text" id="itemUnit" placeholder="ឯកតា" style="width: 80px;">
-                    <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 70px;">
-                    <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 90px;">
-                    <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
-                </div>
+            <!-- ម៉ឺនុយទី ២: ទៅកាន់ផ្ទាំងបង្កើតវិក្កយបត្រ -->
+            <a href="invoice.html" class="menu-card">
+                <div class="menu-icon blue">🧾</div>
+                <h2>ការបង្កើតវិក្កយបត្រ (Invoice Generator)</h2>
+                <p>បង្កើត ទម្លាក់ Logo កាលបរិច្ឆេទ និងទាញយកជា PDF យ៉ាងងាយស្រួល។</p>
+            </a>
 
-                <!-- ប្រអប់សម្រាប់ Upload រូបភាព Attachments -->
-                <div class="form-row no-print" style="background: #f1f3f5; padding: 10px; border-radius: 8px; align-items: center;">
-                    <label style="font-size: 13px; font-weight: bold; color: #333;">📁 រូបភាពភ្ជាប់ (Attachments):</label>
-                    <input type="file" id="imageInput" accept="image/*" multiple style="flex: 1; border: none; background: #fff; padding: 5px;">
-                </div>
-
-                <!-- ប្រអប់បង្ហាញទម្រង់វិក្កយបត្រ -->
-                <div id="invoice-content" class="invoice-box">
-                    
-                    <!-- Header ក្នុង Invoice មាន Logo និងចំណងជើង -->
-                    <div class="inv-header-section">
-                        <div class="logo-container">
-                            <img id="invoiceLogo" src="" alt="" style="display: none;">
-                        </div>
-                        <div class="inv-title-container">
-                            <div class="inv-title">វិក្កយបត្រ</div>
-                        </div>
-                    </div>
-
-                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDateDisplay"></span></div>
-
-                    <table class="inv-table">
-                        <thead>
-                            <tr>
-                                <th>លរ</th>
-                                <th>បរិយាយ</th>
-                                <th>បរិមាណ</th>
-                                <th>ឯកតា</th>
-                                <th>តម្លៃ ($)</th>
-                                <th>តម្លៃសរុប ($)</th>
-                                <th>ផ្សេងៗ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoiceTableBody">
-                            <!-- Items will appear here -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="total-row">
-                                <td colspan="5" style="text-align: right; font-weight: bold;">សរុបទឹកប្រាក់ (USD)</td>
-                                <td colspan="2" id="grandTotal" style="font-weight: bold; text-align: left; padding-left: 10px;">$ 0.00</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                    <div class="inv-signatures">
-                        <div class="sig-box">
-                            <p>រៀបចំដោយ:</p>
-                            <br><br>
-                            <p>........................................</p>
-                        </div>
-                        <div class="sig-box">
-                            <p>ទទួលដោយ:</p>
-                            <br><br>
-                            <p>........................................</p>
-                        </div>
-                    </div>
-
-                    <!-- ផ្នែកបង្ហាញរូបភាព Attachments នៅខាងក្រោម -->
-                    <div id="attachmentSection" class="attachment-container" style="display: none;">
-                        <div class="att-title">ឯកសារភ្ជាប់ (Attachments):</div>
-                        <div id="imagePreviewContainer" class="image-grid"></div>
-                    </div>
-                </div>
-
-                <button id="downloadPdfBtn" class="download-btn no-print">ទាញយកជា PDF (Save as PDF)</button>
-            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
 </body>
 </html>
