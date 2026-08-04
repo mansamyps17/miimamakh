@@ -344,12 +344,12 @@ header p {
 @media print {
     @page {
         size: A4;
-        margin: 5mm;
+        margin: 0mm;
     }
 
     body {
         background-color: white;
-        padding: 0;
+        padding: 10mm;
         margin: 0;
     }
 
@@ -367,5 +367,12 @@ header p {
         border: none !important;
         padding: 0 !important;
         margin: 0 !important;
+    }
+
+    @page {
+        @bottom-left { content: none; }
+        @bottom-right { content: none; }
+        @top-left { content: none; }
+        @top-right { content: none; }
     }
 }
