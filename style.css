@@ -247,9 +247,10 @@ header p {
 }
 
 .inv-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #333;
+    font-size: 24px;
+    font-weight: bold;             /* ធ្វើឱ្យអក្សរដិត (Bold) */
+    text-decoration: underline;    /* គូសបន្ទាត់ក្រោម (Underline) */
+    color: #222;
 }
 
 .attachment-container {
