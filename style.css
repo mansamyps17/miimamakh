@@ -179,20 +179,20 @@ header p {
 }
 
 .logo-container {
-    width: 120px;
-    min-height: 40px;
+    width: 180px;
+    min-height: 60px;
 }
 
 .logo-container img {
-    max-width: 110px;
-    max-height: 60px;
+    max-width: 170px;
+    max-height: 90px;
     object-fit: contain;
 }
 
 .inv-title-container {
     flex: 1;
     text-align: center;
-    margin-right: 120px;
+    margin-right: 180px;
 }
 
 .inv-title {
@@ -227,6 +227,7 @@ header p {
     padding: 5px;
     background: #fff;
     text-align: center;
+    page-break-inside: avoid;
 }
 
 .image-item img {
@@ -317,6 +318,7 @@ header p {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
+    page-break-inside: avoid;
 }
 
 .sig-box {
@@ -340,21 +342,29 @@ header p {
 }
 
 @media print {
+    @page {
+        margin: 10mm;
+    }
+
     body {
         background-color: white;
         padding: 0;
         margin: 0;
     }
+
     .no-print {
         display: none !important;
     }
+
     .folder-section {
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
     }
+
     .invoice-box {
         border: none !important;
         padding: 0 !important;
+        margin: 0 !important;
     }
 }
