@@ -1,6 +1,10 @@
 body {
     font-family: 'Battambang', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 100%);
+    background-image: url('background.png'); /* ហ្វាលរូបភាពដែលអ្នកបានដាក់ */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -69,7 +73,8 @@ header p {
 }
 
 .menu-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9); /* បន្ថែមភាពថ្លាបន្តិចដើម្បីឱ្យស្អាតជាមួយ Background */
+    backdrop-filter: blur(5px);
     border: none;
     border-radius: 14px;
     padding: 25px 20px;
@@ -97,6 +102,7 @@ header p {
 .menu-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 1);
 }
 
 .menu-card:hover::before {
@@ -134,7 +140,7 @@ header p {
 }
 
 .tool-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95);
     padding: 20px 15px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -183,7 +189,7 @@ header p {
 }
 
 .setting-box {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95);
     padding: 12px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
@@ -283,7 +289,8 @@ header p {
 }
 
 .folder-section {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
     border: none;
     border-radius: 16px;
     padding: 20px;
@@ -417,6 +424,7 @@ header p {
     }
 
     body {
+        background-image: none !important;
         background-color: white;
         padding: 0;
         margin: 0;
@@ -430,6 +438,7 @@ header p {
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
+        background: white !important;
     }
 
     .invoice-box {
