@@ -1,6 +1,6 @@
 body {
     font-family: 'Battambang', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 100%);
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -11,8 +11,8 @@ body {
 
 .container {
     width: 100%;
-    max-width: 900px;
-    padding: 40px 20px;
+    max-width: 750px;
+    padding: 30px 20px;
     animation: fadeIn 0.8s ease-in-out;
 }
 
@@ -29,21 +29,20 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 35px;
     position: relative;
 }
 
 header h1 {
-    color: #2c3e50;
-    margin-bottom: 10px;
-    font-size: 32px;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 26px;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 header p {
-    color: #555;
-    font-size: 15px;
+    color: #666;
+    font-size: 14px;
     font-weight: 400;
 }
 
@@ -66,19 +65,19 @@ header p {
 .dashboard-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    gap: 20px;
 }
 
 .menu-card {
     background: #ffffff;
     border: none;
-    border-radius: 18px;
-    padding: 40px 30px;
+    border-radius: 14px;
+    padding: 25px 20px;
     text-align: center;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
@@ -89,15 +88,15 @@ header p {
     top: 0;
     left: 0;
     width: 100%;
-    height: 5px;
-    background: linear-gradient(90deg, #007bff, #00d2ff);
+    height: 4px;
+    background: linear-gradient(90deg, #ffb347, #ffcc33, #ff758c);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .menu-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .menu-card:hover::before {
@@ -105,39 +104,39 @@ header p {
 }
 
 .menu-icon {
-    font-size: 55px;
-    margin-bottom: 20px;
+    font-size: 42px;
+    margin-bottom: 12px;
     transition: transform 0.3s ease;
 }
 
 .menu-card:hover .menu-icon {
-    transform: scale(1.15) rotate(5deg);
+    transform: scale(1.1) rotate(3deg);
 }
 
 .menu-card h2 {
-    font-size: 20px;
-    color: #2c3e50;
-    margin-bottom: 12px;
+    font-size: 17px;
+    color: #333;
+    margin-bottom: 8px;
     font-weight: 700;
 }
 
 .menu-card p {
-    font-size: 14px;
+    font-size: 12px;
     color: #666;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .tools-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 15px;
 }
 
 .tool-card {
     background: #ffffff;
-    padding: 25px 20px;
-    border-radius: 14px;
+    padding: 20px 15px;
+    border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     text-decoration: none;
     color: inherit;
@@ -154,16 +153,16 @@ header p {
 }
 
 .icon {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 15px;
+    font-size: 15px;
+    margin-bottom: 12px;
 }
 
 .icon.red { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
@@ -172,24 +171,24 @@ header p {
 .icon.blue { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
 
 .tool-card h3 {
-    font-size: 16px;
+    font-size: 15px;
     color: #333;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
 }
 
 .tool-card p {
-    font-size: 13px;
+    font-size: 12px;
     color: #777;
     margin: 0;
 }
 
 .setting-box {
     background: #ffffff;
-    padding: 15px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: space-between;
     align-items: center;
 }
@@ -208,11 +207,11 @@ header p {
 }
 
 .setting-group input {
-    padding: 8px;
+    padding: 6px 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-family: 'Battambang', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     background: #fdfdfd;
 }
 
@@ -220,57 +219,57 @@ header p {
     display: flex;
     align-items: center;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .logo-container {
-    width: 180px;
-    min-height: 60px;
+    width: 160px;
+    min-height: 50px;
     margin-top: 10mm;
 }
 
 .logo-container img {
-    max-width: 170px;
-    max-height: 90px;
+    max-width: 150px;
+    max-height: 80px;
     object-fit: contain;
 }
 
 .inv-title-container {
     flex: 1;
     text-align: center;
-    margin-right: 180px;
+    margin-right: 160px;
 }
 
 .inv-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
-    color: #2c3e50;
+    color: #333;
 }
 
 .attachment-container {
-    margin-top: 40px;
+    margin-top: 30px;
     border-top: 2px dashed #ddd;
-    padding-top: 20px;
+    padding-top: 15px;
     page-break-inside: avoid;
 }
 
 .att-title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .image-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 12px;
 }
 
 .image-item {
     border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 6px;
+    border-radius: 6px;
+    padding: 5px;
     background: #fff;
     text-align: center;
     page-break-inside: avoid;
@@ -278,32 +277,32 @@ header p {
 
 .image-item img {
     width: 100%;
-    max-height: 250px;
+    max-height: 220px;
     object-fit: contain;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 .folder-section {
     background: #ffffff;
     border: none;
-    border-radius: 18px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
 }
 
 .invoice-form .form-row {
     display: flex;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
 }
 
 .invoice-form input {
-    padding: 10px 14px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 6px;
     font-family: 'Battambang', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     transition: border-color 0.2s;
 }
 
@@ -314,55 +313,55 @@ header p {
 
 #itemName {
     flex: 1;
-    min-width: 150px;
+    min-width: 140px;
 }
 
 .action-btn {
-    padding: 10px 22px;
+    padding: 8px 18px;
     background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     font-family: 'Battambang', sans-serif;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 5px 12px rgba(0, 123, 255, 0.4);
 }
 
 .invoice-box {
     background: white;
     border: 1px solid #eaeaea;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .inv-date {
     text-align: right;
-    font-size: 13px;
+    font-size: 12px;
     color: #555;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .inv-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .inv-table th, .inv-table td {
     border: 1px solid #333 !important;
-    padding: 8px 10px;
+    padding: 6px 8px;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .inv-table th {
@@ -377,35 +376,35 @@ header p {
 .inv-signatures {
     display: flex;
     justify-content: space-between;
-    margin-top: 40px;
+    margin-top: 30px;
     page-break-inside: avoid;
 }
 
 .sig-box {
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     width: 40%;
 }
 
 .download-btn {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     background: linear-gradient(135deg, #28a745, #218838);
     color: white;
     border: none;
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     font-family: 'Battambang', sans-serif;
-    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .download-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
 }
 
 @media print {
