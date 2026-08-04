@@ -14,26 +14,60 @@
 <body>
 
     <div class="container">
-        <header>
-            <a href="index.html" class="back-link no-print">← ត្រឡប់ក្រោយ (Back)</a>
+        <header class="no-print">
+            <a href="index.html" class="back-link">← ត្រឡប់ក្រោយ (Back)</a>
             <h1>🧾 វិក្កយបត្រ (Invoice Generator)</h1>
-            <p>បញ្ចូលទំនិញ និងទាញយកជា PDF</p>
+            <p>កំណត់ Logo កាលបរិច្ឆេទ ឈ្មោះហ្វាល និងទំនិញ</p>
         </header>
 
         <div class="folder-section">
             <div class="invoice-form">
+                
+                <!-- ផ្នែកកំណត់ Logo, កាលបរិច្ឆេទ និងឈ្មោះហ្វាល PDF -->
+                <div class="form-row no-print setting-box">
+                    <div class="setting-group">
+                        <label>🖼️ ដាក់ Logo ក្រុមហ៊ុន:</label>
+                        <input type="file" id="logoInput" accept="image/*">
+                    </div>
+                    <div class="setting-group">
+                        <label>📅 កាលបរិច្ឆេទ:</label>
+                        <input type="date" id="dateInput">
+                    </div>
+                    <div class="setting-group">
+                        <label>📝 ឈ្មោះហ្វាល PDF:</label>
+                        <input type="text" id="pdfNameInput" value="Invoice_A4" placeholder="ឈ្មោះហ្វាល PDF">
+                    </div>
+                </div>
+
+                <!-- ប្រអប់បញ្ចូលទំនិញ -->
                 <div class="form-row no-print">
                     <input type="text" id="itemName" placeholder="ឈ្មោះទំនិញ / បរិយាយ">
-                    <input type="text" id="itemUnit" placeholder="ឯកតា (ឧ. ដុំ, ឈុត)" style="width: 110px;">
-                    <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 80px;">
-                    <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 100px;">
+                    <input type="text" id="itemUnit" placeholder="ឯកតា" style="width: 80px;">
+                    <input type="number" id="itemQty" placeholder="បរិមាណ" value="1" style="width: 70px;">
+                    <input type="number" id="itemPrice" placeholder="តម្លៃ ($)" style="width: 90px;">
                     <button id="addItemBtn" class="action-btn">បន្ថែមទំនិញ</button>
+                </div>
+
+                <!-- ប្រអប់សម្រាប់ Upload រូបភាព Attachments -->
+                <div class="form-row no-print" style="background: #f1f3f5; padding: 10px; border-radius: 8px; align-items: center;">
+                    <label style="font-size: 13px; font-weight: bold; color: #333;">📁 រូបភាពភ្ជាប់ (Attachments):</label>
+                    <input type="file" id="imageInput" accept="image/*" multiple style="flex: 1; border: none; background: #fff; padding: 5px;">
                 </div>
 
                 <!-- ប្រអប់បង្ហាញទម្រង់វិក្កយបត្រ -->
                 <div id="invoice-content" class="invoice-box">
-                    <div class="inv-title">វិក្កយបត្រ</div>
-                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDate"></span></div>
+                    
+                    <!-- Header ក្នុង Invoice មាន Logo និងចំណងជើង -->
+                    <div class="inv-header-section">
+                        <div class="logo-container">
+                            <img id="invoiceLogo" src="" alt="" style="display: none;">
+                        </div>
+                        <div class="inv-title-container">
+                            <div class="inv-title">វិក្កយបត្រ</div>
+                        </div>
+                    </div>
+
+                    <div class="inv-date">កាលបរិច្ឆេទ / Date: <span id="invDateDisplay"></span></div>
 
                     <table class="inv-table">
                         <thead>
@@ -69,6 +103,12 @@
                             <br><br>
                             <p>........................................</p>
                         </div>
+                    </div>
+
+                    <!-- ផ្នែកបង្ហាញរូបភាព Attachments នៅខាងក្រោម -->
+                    <div id="attachmentSection" class="attachment-container" style="display: none;">
+                        <div class="att-title">ឯកសារភ្ជាប់ (Attachments):</div>
+                        <div id="imagePreviewContainer" class="image-grid"></div>
                     </div>
                 </div>
 
