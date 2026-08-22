@@ -148,6 +148,8 @@
             margin-top: 4px; 
             border-top: 1px dashed #aaa;
             padding-top: 4px;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
         .qr-container { 
             width: 90px; 
@@ -217,13 +219,17 @@
         @media print {
             @page {
                 size: A4;
-                margin: 3mm;
+                margin: 5mm;
             }
             .no-print { display: none !important; }
             body { background-color: #fff; padding: 0; color: #000; }
             .invoice-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
             input { border: none !important; background: transparent !important; color: #000 !important; }
             
+            /* ការពារកុំឱ្យកាត់ដាច់ជួរតារាង និងបង្ហាញ Header នៅគ្រប់ទំព័រថ្មី */
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; break-inside: avoid; }
+
             th {
                 background-color: #2e7d32 !important;
                 color: #ffffff !important;
