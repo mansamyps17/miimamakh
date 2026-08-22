@@ -2,63 +2,199 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <title>វិក្កយបត្រ (Tax Invoice)</title>
-    <link rel="stylesheet" href="style.css">
+    <title>វិក្កយបត្រ (TAX INVOICE)</title>
+    <style>
+        body { 
+            font-family: 'Battambang', sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333; 
+            background-color: #f9f9f9;
+        }
+        .invoice-container { 
+            width: 100%; 
+            max-width: 800px; 
+            margin: auto; 
+            background: #fff;
+            border: 1px solid #ccc; 
+            padding: 30px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 2px solid #2e7d32; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px;
+        }
+        .logo-placeholder { 
+            width: 120px; 
+            height: 60px; 
+            background: #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            color: #777;
+            border: 1px dashed #aaa;
+        }
+        .title { 
+            font-size: 22px; 
+            font-weight: bold; 
+            color: #2e7d32; 
+            text-decoration: underline; 
+            text-align: right;
+        }
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+        .info-box { 
+            border: 1px solid #ccc; 
+            padding: 12px; 
+            border-radius: 6px; 
+            background: #fff;
+        }
+        .info-box p {
+            margin: 6px 0;
+            font-size: 13px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+            margin-bottom: 20px;
+        }
+        th { 
+            background-color: #2e7d32; 
+            color: white; 
+            padding: 10px; 
+            font-size: 13px;
+            border: 1px solid #2e7d32;
+        }
+        td { 
+            border: 1px solid #aaa; 
+            padding: 8px 10px; 
+            text-align: center; 
+            font-size: 13px;
+        }
+        .qr-section { 
+            display: flex; 
+            justify-content: space-between;
+            align-items: flex-start; 
+            margin-top: 20px; 
+            border-top: 1px dashed #ccc;
+            padding-top: 20px;
+        }
+        .qr-placeholder { 
+            width: 110px; 
+            height: 110px; 
+            border: 1px solid #aaa; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #fdfdfd;
+            font-weight: bold;
+            color: #555;
+        }
+        .totals { 
+            width: 320px; 
+        }
+        .total-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 6px 0; 
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+        .total-row.grand-total {
+            font-weight: bold;
+            font-size: 15px;
+            border-bottom: none;
+            color: #2e7d32;
+            margin-top: 5px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ផ្នែកខាងលើ -->
-        <div class="inv-header-section no-print">
-            <a href="index.html" class="back-link">← ត្រឡប់ក្រោយ</a>
-        </div>
-
-        <div class="invoice-box" id="invoice-content">
-            <div class="inv-header">
-                <div class="logo-container">
-                    <img id="invoiceLogo" src="" alt="Logo" style="display:none;">
-                </div>
-                <div class="inv-title"><u>វិក្កយបត្រ (TAX INVOICE)</u></div>
-            </div>
-
-            <!-- ព័ត៌មានអតិថិជន និងវិក្កយបត្រ -->
-            <div class="info-section">
-                <div class="info-col">
-                    <p><strong>អតិថិជន:</strong> <input type="text" id="custName" placeholder="ឈ្មោះអតិថិជន"></p>
-                    <p><strong>ទូរស័ព្ទ:</strong> <input type="text" id="custPhone" placeholder="លេខទូរស័ព្ទ"></p>
-                    <p><strong>អាសយដ្ឋាន:</strong> <input type="text" id="custAddr" placeholder="អាសយដ្ឋាន"></p>
-                </div>
-                <div class="info-col">
-                    <p><strong>វិក្កយបត្រលេខ:</strong> <input type="text" id="invNo" placeholder="លេខរៀង"></p>
-                    <p><strong>កាលបរិច្ឆេទ:</strong> <input type="date" id="dateInput"></p>
-                </div>
-            </div>
-
-            <!-- តារាងទំនិញ -->
-            <table class="inv-table">
-                <thead>
-                    <tr>
-                        <th>លរ</th><th>បរិយាយ</th><th>បរិមាណ</th><th>តម្លៃ</th><th>តម្លៃសរុប</th>
-                    </tr>
-                </thead>
-                <tbody id="invoiceTableBody"></tbody>
-            </table>
-
-            <!-- ផ្នែក QR Code និង សរុបទឹកប្រាក់ -->
-            <div class="footer-section">
-                <div class="qr-box">
-                    <p>Scan Pay Here:</p>
-                    <div id="qrPreview"></div>
-                </div>
-                <div class="totals-box">
-                    <p>សរុប (Sub Total): <span id="subTotal">$ 0.00</span></p>
-                    <p>បញ្ចុះតម្លៃ (Discount): <input type="number" id="discount" value="0" style="width:50px;"></p>
-                    <p>អាករ (VAT 10%): <span id="vatAmount">$ 0.00</span></p>
-                    <p style="font-weight:bold; font-size: 1.2em;">សរុបទាំងអស់ (Grand Total): <span id="grandTotal">$ 0.00</span></p>
-                </div>
-            </div>
-        </div>
+    <div class="invoice-container">
+        <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
         
-        <button onclick="window.print()" class="download-btn no-print">ទាញយកជា PDF</button>
+        <div class="header">
+            <div>
+                <div class="logo-placeholder">Logo</div>
+                <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: bold;">ឈ្មោះក្រុមហ៊ុន / Company Name</p>
+            </div>
+            <div class="title">វិក្កយបត្រ (TAX INVOICE)[cite: 1]</div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <p><strong>អតិថិជន (Customer Name):</strong> .......................</p>
+                <p><strong>លេខទូរស័ព្ទ (Phone):</strong> .......................</p>
+                <p><strong>អាសយដ្ឋាន (Address):</strong> .......................</p>
+            </div>
+            <div class="info-box">
+                <p><strong>វិក្កយបត្រលេខ (Invoice No):</strong> .......................</p>
+                <p><strong>កាលបរិច្ឆេទ (Date):</strong> 04-08-2026</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>លរ (No)</th>
+                    <th>បរិយាយ (Description)</th>
+                    <th>បរិមាណ (Qty)</th>
+                    <th>តម្លៃ (Price)</th>
+                    <th>តម្លៃសរុប (Amount)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Product Name</td>
+                    <td>1</td>
+                    <td>$ 0.00</td>
+                    <td>$ 0.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="qr-section">
+            <div>
+                <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: bold;">Scan Pay Here:</p>
+                <div class="qr-placeholder">QR Code</div>
+            </div>
+            <div class="totals">
+                <div class="total-row">
+                    <span>សរុប (Sub Total):</span>
+                    <span>$ 0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>បញ្ចុះតម្លៃ (Discount):</span>
+                    <span>$ 0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>អាករ (VAT 10%):</span>
+                    <span>$ 0.00[cite: 1]</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>សរុបទាំងអស់ (Grand Total):</span>
+                    <span>$ 0.00[cite: 1]</span>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
