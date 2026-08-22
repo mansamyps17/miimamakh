@@ -31,6 +31,8 @@
             background: #eee;
             padding: 8px 12px;
             border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .header { 
             display: flex; 
@@ -120,7 +122,6 @@
             font-size: 12px;
             color: #111;
         }
-        /* តម្រឹមអត្ថបទ Description ទៅខាងឆ្វេង */
         td.desc-cell {
             text-align: left;
             padding-left: 10px;
@@ -166,7 +167,7 @@
             font-weight: bold;
         }
         .totals { 
-            width: 280px; 
+            width: 290px; 
         }
         .total-row { 
             display: flex; 
@@ -250,14 +251,29 @@
 </head>
 <body>
     <div class="invoice-container">
+        <!-- ផ្នែកជ្រើសរើសទំហំក្រដាស និងរូបិយប័ណ្ណ -->
         <div class="top-controls no-print">
             <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
-            <div>
-                <label for="paperSize" style="font-size: 13px; font-weight: bold;">ជ្រើសរើសទំហំក្រដាស:</label>
-                <select id="paperSize" onchange="changePaperSize()" style="padding: 4px 8px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
-                    <option value="A4">A4</option>
-                    <option value="letter">Letter (US)</option>
-                </select>
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <label for="paperSize" style="font-size: 12px; font-weight: bold;">ទំហំក្រដាស:</label>
+                    <select id="paperSize" onchange="changePaperSize()" style="padding: 3px 6px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
+                        <option value="A4">A4</option>
+                        <option value="letter">Letter (US)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="currency" style="font-size: 12px; font-weight: bold;">រូបិយប័ណ្ណ:</label>
+                    <select id="currency" onchange="calculateTotal()" style="padding: 3px 6px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
+                        <option value="$">ដុល្លារ ($)</option>
+                        <option value="៛">រៀល (៛)</option>
+                    </select>
+                </div>
+                <div id="rateContainer" style="display: none; align-items: center; gap: 5px;">
+                    <label style="font-size: 12px; font-weight: bold;">អត្រា ($1 =):</label>
+                    <input type="number" id="exchangeRate" value="4100" oninput="calculateTotal()" style="width: 60px; padding: 2px 4px; font-size: 12px; border: 1px solid #aaa; border-radius: 4px; text-align: center;">
+                    <span style="font-size: 12px;">៛</span>
+                </div>
             </div>
         </div>
         
@@ -293,8 +309,8 @@
                     <th>បរិយាយ (Description)</th>
                     <th style="width: 70px;">ឯកតា</th>
                     <th style="width: 60px;">បរិមាណ</th>
-                    <th style="width: 80px;">តម្លៃ ($)</th>
-                    <th style="width: 90px;">តម្លៃសរុប</th>
+                    <th style="width: 80px;" id="thPrice">តម្លៃ ($)</th>
+                    <th style="width: 90px;" id="thAmount">តម្លៃសរុប</th>
                     <th class="no-print" style="width: 40px;">លុប</th>
                 </tr>
             </thead>
@@ -328,7 +344,7 @@
                 <div class="total-row">
                     <span>បញ្ចុះតម្លៃ (Discount):</span>
                     <div>
-                        <span>$</span>
+                        <span id="discSym">$</span>
                         <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
                     </div>
                 </div>
@@ -385,6 +401,20 @@
         }
 
         function calculateTotal() {
+            let curr = document.getElementById('currency').value;
+            let rateContainer = document.getElementById('rateContainer');
+            let rate = parseFloat(document.getElementById('exchangeRate').value) || 4100;
+
+            if (curr === '៛') {
+                rateContainer.style.display = 'flex';
+            } else {
+                rateContainer.style.display = 'none';
+            }
+
+            document.getElementById('thPrice').innerText = `តម្លៃ (${curr})`;
+            document.getElementById('thAmount').innerText = `តម្លៃសរុប`;
+            document.getElementById('discSym').innerText = curr;
+
             let rows = document.getElementById('tableBody').rows;
             let subTotal = 0;
 
@@ -392,7 +422,12 @@
                 let qty = parseFloat(rows[i].cells[3].getElementsByTagName('input')[0].value) || 0;
                 let price = parseFloat(rows[i].cells[4].getElementsByTagName('input')[0].value) || 0;
                 let amount = qty * price;
-                rows[i].cells[5].innerText = '$ ' + amount.toFixed(2);
+                
+                if (curr === '៛') {
+                    rows[i].cells[5].innerText = amount.toLocaleString('en-US') + ' ៛';
+                } else {
+                    rows[i].cells[5].innerText = '$ ' + amount.toFixed(2);
+                }
                 subTotal += amount;
             }
 
@@ -407,9 +442,15 @@
             
             let grandTotal = afterDiscount + vat;
 
-            document.getElementById('subTotal').innerText = '$ ' + subTotal.toFixed(2);
-            document.getElementById('vatAmount').innerText = '$ ' + vat.toFixed(2);
-            document.getElementById('grandTotal').innerText = '$ ' + grandTotal.toFixed(2);
+            if (curr === '៛') {
+                document.getElementById('subTotal').innerText = subTotal.toLocaleString('en-US') + ' ៛';
+                document.getElementById('vatAmount').innerText = vat.toLocaleString('en-US') + ' ៛';
+                document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('en-US') + ' ៛';
+            } else {
+                document.getElementById('subTotal').innerText = '$ ' + subTotal.toFixed(2);
+                document.getElementById('vatAmount').innerText = '$ ' + vat.toFixed(2);
+                document.getElementById('grandTotal').innerText = '$ ' + grandTotal.toFixed(2);
+            }
         }
 
         function loadLogo(event) {
