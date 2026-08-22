@@ -37,13 +37,14 @@
             justify-content: space-between; 
             align-items: center;
             border-bottom: 2px solid #2e7d32; 
-            padding-bottom: 6px; 
-            margin-bottom: 8px;
+            padding-bottom: 8px; 
+            margin-bottom: 10px;
         }
-        /* Logo ធំស្អាតលើអេក្រង់ */
+        
+        /* កំណត់ Logo ឱ្យធំច្បាស់ */
         .logo-container { 
-            width: 300px; 
-            height: 115px; 
+            width: 320px; 
+            height: 130px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -61,7 +62,7 @@
             text-align: center;
         }
         .title { 
-            font-size: 24px; 
+            font-size: 26px; 
             font-weight: bold; 
             color: #1b5e20; 
             text-decoration: underline; 
@@ -86,7 +87,7 @@
         }
         .info-table td {
             border: none !important;
-            padding: 2px 0 !important;
+            padding: 3px 0 !important;
             font-size: 11px;
             font-weight: bold;
             color: #222;
@@ -94,7 +95,7 @@
             text-align: left !important;
         }
         .info-table td.label-col {
-            width: 100px;
+            width: 95px;
             white-space: nowrap;
         }
         .info-table input {
@@ -113,28 +114,20 @@
             -moz-appearance: none;
             appearance: none;
         }
-        /* បង្ខំឱ្យកាលបរិច្ឆេទលើ iOS Safari Align ឆ្វេងស្មើគ្នា 100% */
-        input[type="date"] {
-            text-align: left !important;
-        }
         input[type="date"]::-webkit-date-and-time-value {
             text-align: left !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            display: flex !important;
-            justify-content: flex-start !important;
         }
 
         table.inv-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 4px; 
-            margin-bottom: 6px;
+            margin-top: 6px; 
+            margin-bottom: 8px;
         }
         table.inv-table th { 
             background-color: #2e7d32 !important; 
             color: #ffffff !important; 
-            padding: 4px; 
+            padding: 5px; 
             font-size: 11px;
             font-weight: bold;
             border: 1px solid #2e7d32 !important;
@@ -143,11 +136,10 @@
         }
         table.inv-table td { 
             border: 1px solid #333; 
-            padding: 2px 4px; 
+            padding: 3px 5px; 
             text-align: center; 
-            font-size: 10.5px;
+            font-size: 11px;
             color: #111;
-            line-height: 1.1;
         }
         table.inv-table td.desc-cell {
             text-align: left;
@@ -158,7 +150,7 @@
             border: none;
             text-align: center;
             font-family: 'Battambang', sans-serif;
-            font-size: 10.5px;
+            font-size: 11px;
             background: transparent;
             color: #111;
         }
@@ -173,16 +165,16 @@
             display: flex; 
             justify-content: space-between;
             align-items: flex-start; 
-            margin-top: 6px; 
+            margin-top: 8px; 
             border-top: 1px dashed #aaa;
-            padding-top: 6px;
+            padding-top: 8px;
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        /* QR Code ធំស្អាតលើអេក្រង់ */
+        /* កំណត់ QR Code ឱ្យធំច្បាស់ */
         .qr-container { 
-            width: 140px; 
-            height: 140px; 
+            width: 160px; 
+            height: 160px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -208,7 +200,7 @@
         .totals-table td {
             border: none !important;
             border-bottom: 1px solid #ddd !important;
-            padding: 2px 0 !important;
+            padding: 3px 0 !important;
             font-size: 11px;
             font-weight: bold;
             color: #111;
@@ -263,11 +255,11 @@
             font-size: 11px;
         }
 
-        /* ផ្នែក PRINT/PDF៖ កែសម្រួលពិសេសដើម្បីធានាថា ២៥+ ជួរ នៅតែចូលក្នុង 1 ទំព័រ A4 ស្ថាពរ */
+        /* ផ្នែក PRINT/PDF៖ រក្សា Logo & QR ឱ្យនៅតែធំច្បាស់ និងមិនឱ្យដាច់ទំព័រ */
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 3mm 4mm;
+                margin: 4mm 5mm;
             }
             .no-print { display: none !important; }
             html, body { 
@@ -282,6 +274,8 @@
                 padding: 0 !important; 
                 width: 100% !important; 
                 max-width: 100% !important; 
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
             input { 
                 border: none !important; 
@@ -293,67 +287,15 @@
                 display: none !important;
             }
             
-            /* បង្រួមកម្ពស់ធាតុផ្សំសម្រាប់ PDF ធានាថាផ្ទុកបាន ២៥+ ជួរក្នុង ១ ទំព័រ */
-            .header {
-                margin-bottom: 3px !important;
-                padding-bottom: 3px !important;
-            }
+            /* រក្សា Logo ឱ្យធំពេល Save PDF */
             .logo-container {
-                height: 65px !important;
-                width: 180px !important;
+                height: 120px !important;
+                width: 300px !important;
             }
-            .title {
-                font-size: 18px !important;
-            }
-            .info-grid {
-                margin-bottom: 3px !important;
-                gap: 5px !important;
-            }
-            .info-box {
-                padding: 2px 5px !important;
-            }
-            .info-table td {
-                padding: 1px 0 !important;
-                font-size: 9.5px !important;
-            }
-            .info-table input {
-                font-size: 9.5px !important;
-                padding: 0 !important;
-            }
-            table.inv-table {
-                margin-top: 2px !important;
-                margin-bottom: 3px !important;
-            }
-            table.inv-table th {
-                padding: 2px 2px !important;
-                font-size: 9.5px !important;
-            }
-            table.inv-table td {
-                padding: 1px 2px !important;
-                font-size: 8.5px !important;
-                line-height: 1.0 !important;
-            }
-            table.inv-table td input {
-                font-size: 8.5px !important;
-            }
-            .qr-section {
-                margin-top: 3px !important;
-                padding-top: 3px !important;
-            }
+            /* រក្សា QR Code ឱ្យធំពេល Save PDF */
             .qr-container {
-                width: 80px !important;
-                height: 80px !important;
-            }
-            .totals {
-                width: 220px !important;
-            }
-            .totals-table td {
-                padding: 1px 0 !important;
-                font-size: 9.5px !important;
-            }
-            .discount-input {
-                font-size: 9.5px !important;
-                padding: 0 !important;
+                width: 150px !important;
+                height: 150px !important;
             }
 
             thead { display: table-header-group; }
@@ -468,7 +410,7 @@
 
         <div class="qr-section">
             <div>
-                <p style="margin: 0 0 4px 0; font-size: 10px; font-weight: bold;">Scan Pay Here:</p>
+                <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: bold;">Scan Pay Here:</p>
                 <div class="qr-container" onclick="document.getElementById('qrInput').click()">
                     <span id="qrText">+ ដាក់ QR</span>
                     <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
