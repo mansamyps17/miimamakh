@@ -41,8 +41,8 @@
             margin-bottom: 8px;
         }
         .logo-container { 
-            width: 250px; 
-            height: 95px; 
+            width: 240px; 
+            height: 90px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -74,20 +74,28 @@
         }
         .info-box { 
             border: 1px solid #aaa; 
-            padding: 6px 10px; 
+            padding: 4px 8px; 
             border-radius: 6px; 
             background: #fff;
         }
-        .info-row {
-            display: grid;
-            grid-template-columns: 95px 1fr;
-            align-items: center;
-            margin: 3px 0;
+        /* ប្រើប្រាស់ table ខាងក្នុង info-box ដើម្បីធានាថា Align ស្មើគ្នា 100% */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        .info-table td {
+            border: none;
+            padding: 3px 2px;
             font-size: 11px;
             font-weight: bold;
             color: #222;
+            text-align: left;
         }
-        .info-row input {
+        .info-table td.label-col {
+            width: 95px;
+        }
+        .info-table input {
             width: 100%;
             padding: 2px 4px;
             border: 1px solid #bbb;
@@ -97,15 +105,16 @@
             color: #111;
             font-weight: normal;
             box-sizing: border-box;
-            text-align: left !important;
+            text-align: left;
+            background: #fff;
         }
-        table { 
+        table.inv-table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 4px; 
             margin-bottom: 6px;
         }
-        th { 
+        table.inv-table th { 
             background-color: #2e7d32 !important; 
             color: #ffffff !important; 
             padding: 5px; 
@@ -115,18 +124,18 @@
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
-        td { 
+        table.inv-table td { 
             border: 1px solid #333; 
             padding: 3px 5px; 
             text-align: center; 
             font-size: 11px;
             color: #111;
         }
-        td.desc-cell {
+        table.inv-table td.desc-cell {
             text-align: left;
             padding-left: 6px;
         }
-        td input {
+        table.inv-table td input {
             width: 100%;
             border: none;
             text-align: center;
@@ -135,10 +144,10 @@
             background: transparent;
             color: #111;
         }
-        td.desc-cell input {
+        table.inv-table td.desc-cell input {
             text-align: left;
         }
-        td input:focus {
+        table.inv-table td input:focus {
             outline: 1px solid #2e7d32;
         }
         .qr-section { 
@@ -287,13 +296,32 @@
 
         <div class="info-grid">
             <div class="info-box">
-                <div class="info-row"><span>អតិថិជន:</span> <input type="text" value=""></div>
-                <div class="info-row"><span>លេខទូរស័ព្ទ:</span> <input type="text" value=""></div>
-                <div class="info-row"><span>អាសយដ្ឋាន:</span> <input type="text" value=""></div>
+                <table class="info-table">
+                    <tr>
+                        <td class="label-col">អតិថិជន:</td>
+                        <td><input type="text" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">លេខទូរស័ព្ទ:</td>
+                        <td><input type="text" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">អាសយដ្ឋាន:</td>
+                        <td><input type="text" value=""></td>
+                    </tr>
+                </table>
             </div>
             <div class="info-box">
-                <div class="info-row"><span>វិក្កយបត្រលេខ:</span> <input type="text" value=""></div>
-                <div class="info-row"><span>កាលបរិច្ឆេទ:</span> <input type="date" id="invDate"></div>
+                <table class="info-table">
+                    <tr>
+                        <td class="label-col">វិក្កយបត្រលេខ:</td>
+                        <td><input type="text" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">កាលបរិច្ឆេទ:</td>
+                        <td><input type="date" id="invDate"></td>
+                    </tr>
+                </table>
             </div>
         </div>
 
