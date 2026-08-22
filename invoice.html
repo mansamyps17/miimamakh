@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>វិក្កយបត្រ (INVOICE)</title>
+    <!-- ភ្ជាប់ Library សម្រាប់បំលែង HTML ទៅជារូបភាព -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { 
             font-family: 'Battambang', sans-serif; 
@@ -199,7 +201,6 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        /* ប្រអប់ QR Code */
         .qr-container { 
             width: 160px; 
             height: 160px; 
@@ -276,11 +277,33 @@
             font-size: 11px;
             margin-bottom: 4px;
         }
+        .action-btn:hover {
+            background-color: #1b5e20;
+        }
+        .btn-image {
+            background-color: #0288d1;
+        }
+        .btn-image:hover {
+            background-color: #0277bd;
+        }
+
         .back-btn {
             text-decoration: none;
             color: #007bff;
             font-weight: bold;
             font-size: 11px;
+        }
+        
+        .bottom-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .bottom-buttons button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         /* ផ្នែក PRINT/PDF */
@@ -353,7 +376,7 @@
     </style>
 </head>
 <body>
-    <div class="invoice-container">
+    <div class="invoice-container" id="invoiceContainer">
         <div class="top-controls no-print">
             <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
             <div>
@@ -367,7 +390,6 @@
         
         <div class="header">
             <div>
-                <!-- Wrapper របស់ Logo ជាមួយប៊ូតុង Remove (✕) -->
                 <div class="media-wrapper">
                     <div class="logo-container" onclick="document.getElementById('logoInput').click()">
                         <span id="logoText">+ ដាក់ Logo</span>
@@ -441,7 +463,6 @@
         <div class="qr-section">
             <div>
                 <p style="margin: 0 0 4px 0; font-size: 10px; font-weight: bold;">Scan Pay Here:</p>
-                <!-- Wrapper របស់ QR Code ជាមួយប៊ូតុង Remove (✕) -->
                 <div class="media-wrapper">
                     <div class="qr-container" onclick="document.getElementById('qrInput').click()">
                         <span id="qrText">+ ដាក់ QR</span>
@@ -479,7 +500,11 @@
             </div>
         </div>
 
-        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 8px; padding: 6px; font-size: 12px;">បោះពុម្ព / Save ជា PDF</button>
+        <!-- ប៊ូតុង Print / Save PDF និង Save ជារូបភាព -->
+        <div class="bottom-buttons no-print">
+            <button onclick="window.print()" class="action-btn">🖨️ បោះពុម្ព / Save ជា PDF</button>
+            <button onclick="saveAsImage()" class="action-btn btn-image">🖼️ ទាញយកជារូបភាព (PNG)</button>
+        </div>
     </div>
 
     <script>
@@ -563,7 +588,6 @@
             }
         }
 
-        // មុខងារផ្ទុករូបភាព Logo
         function loadLogo(event) {
             let reader = new FileReader();
             reader.onload = function() {
@@ -581,7 +605,6 @@
             }
         }
 
-        // មុខងារលុប Logo ចេញ
         function removeLogo(event) {
             if (event) event.stopPropagation();
             let img = document.getElementById('logoPreview');
@@ -595,7 +618,6 @@
             document.getElementById('removeLogoBtn').style.display = 'none';
         }
 
-        // មុខងារផ្ទុករូបភាព QR Code
         function loadQR(event) {
             let reader = new FileReader();
             reader.onload = function() {
@@ -613,7 +635,6 @@
             }
         }
 
-        // មុខងារលុប QR Code ចេញ
         function removeQR(event) {
             if (event) event.stopPropagation();
             let img = document.getElementById('qrPreview');
@@ -625,6 +646,29 @@
             container.style.background = '#fafafa';
             document.getElementById('qrInput').value = '';
             document.getElementById('removeQrBtn').style.display = 'none';
+        }
+
+        // មុខងារទាញយកជារូបភាព (Save as Image - PNG)
+        function saveAsImage() {
+            let container = document.getElementById('invoiceContainer');
+            
+            // ប្រើប្រាស់ html2canvas ដោយមិនរាប់បញ្ចូលប៊ូតុង no-print
+            html2canvas(container, {
+                scale: 2, // កម្រិតភាពច្បាស់គុណ ២ (HD)
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                ignoreElements: function(element) {
+                    return element.classList.contains('no-print');
+                }
+            }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'វិក្កយបត្រ_INVOICE.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert('មិនអាចទាញយករូបភាពបានទេ សូមព្យាយាមម្តងទៀត!');
+                console.error(err);
+            });
         }
     </script>
 </body>
