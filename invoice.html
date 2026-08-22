@@ -41,7 +41,35 @@
             margin-bottom: 10px;
         }
         
-        /* កំណត់ Logo ឱ្យធំច្បាស់ */
+        /* ប្រអប់ Logo Wrapper និងប៊ូតុងលុប */
+        .media-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .remove-media-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e53935;
+            color: white;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 13px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+        .remove-media-btn:hover {
+            background: #c62828;
+            transform: scale(1.1);
+        }
+
         .logo-container { 
             width: 320px; 
             height: 130px; 
@@ -171,7 +199,7 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        /* កំណត់ QR Code ឱ្យធំច្បាស់ */
+        /* ប្រអប់ QR Code */
         .qr-container { 
             width: 160px; 
             height: 160px; 
@@ -255,7 +283,7 @@
             font-size: 11px;
         }
 
-        /* ផ្នែក PRINT/PDF៖ រក្សា Logo & QR ឱ្យនៅតែធំច្បាស់ និងមិនឱ្យដាច់ទំព័រ */
+        /* ផ្នែក PRINT/PDF */
         @media print {
             @page {
                 size: A4 portrait;
@@ -287,12 +315,10 @@
                 display: none !important;
             }
             
-            /* រក្សា Logo ឱ្យធំពេល Save PDF */
             .logo-container {
                 height: 120px !important;
                 width: 300px !important;
             }
-            /* រក្សា QR Code ឱ្យធំពេល Save PDF */
             .qr-container {
                 width: 150px !important;
                 height: 150px !important;
@@ -341,11 +367,15 @@
         
         <div class="header">
             <div>
-                <div class="logo-container" onclick="document.getElementById('logoInput').click()">
-                    <span id="logoText">+ ដាក់ Logo</span>
-                    <img id="logoPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                <!-- Wrapper របស់ Logo ជាមួយប៊ូតុង Remove (✕) -->
+                <div class="media-wrapper">
+                    <div class="logo-container" onclick="document.getElementById('logoInput').click()">
+                        <span id="logoText">+ ដាក់ Logo</span>
+                        <img id="logoPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                    </div>
+                    <button id="removeLogoBtn" class="remove-media-btn no-print" onclick="removeLogo(event)" title="លុប Logo">✕</button>
+                    <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(event)">
                 </div>
-                <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(event)">
             </div>
             <div class="title"><u>វិក្កយបត្រ (INVOICE)</u></div>
         </div>
@@ -410,12 +440,16 @@
 
         <div class="qr-section">
             <div>
-                <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: bold;">Scan Pay Here:</p>
-                <div class="qr-container" onclick="document.getElementById('qrInput').click()">
-                    <span id="qrText">+ ដាក់ QR</span>
-                    <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                <p style="margin: 0 0 4px 0; font-size: 10px; font-weight: bold;">Scan Pay Here:</p>
+                <!-- Wrapper របស់ QR Code ជាមួយប៊ូតុង Remove (✕) -->
+                <div class="media-wrapper">
+                    <div class="qr-container" onclick="document.getElementById('qrInput').click()">
+                        <span id="qrText">+ ដាក់ QR</span>
+                        <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                    </div>
+                    <button id="removeQrBtn" class="remove-media-btn no-print" onclick="removeQR(event)" title="លុប QR">✕</button>
+                    <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
                 </div>
-                <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
             </div>
             <div class="totals">
                 <table class="totals-table">
@@ -529,6 +563,7 @@
             }
         }
 
+        // មុខងារផ្ទុករូបភាព Logo
         function loadLogo(event) {
             let reader = new FileReader();
             reader.onload = function() {
@@ -539,10 +574,28 @@
                 let container = document.getElementById('logoPreview').parentNode;
                 container.style.border = 'none';
                 container.style.background = 'transparent';
+                document.getElementById('removeLogoBtn').style.display = 'flex';
             };
-            reader.readAsDataURL(event.target.files[0]);
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
         }
 
+        // មុខងារលុប Logo ចេញ
+        function removeLogo(event) {
+            if (event) event.stopPropagation();
+            let img = document.getElementById('logoPreview');
+            img.src = '';
+            img.style.display = 'none';
+            document.getElementById('logoText').style.display = 'block';
+            let container = img.parentNode;
+            container.style.border = '2px dashed #bbb';
+            container.style.background = '#fafafa';
+            document.getElementById('logoInput').value = '';
+            document.getElementById('removeLogoBtn').style.display = 'none';
+        }
+
+        // មុខងារផ្ទុករូបភាព QR Code
         function loadQR(event) {
             let reader = new FileReader();
             reader.onload = function() {
@@ -553,8 +606,25 @@
                 let container = document.getElementById('qrPreview').parentNode;
                 container.style.border = 'none';
                 container.style.background = 'transparent';
+                document.getElementById('removeQrBtn').style.display = 'flex';
             };
-            reader.readAsDataURL(event.target.files[0]);
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        // មុខងារលុប QR Code ចេញ
+        function removeQR(event) {
+            if (event) event.stopPropagation();
+            let img = document.getElementById('qrPreview');
+            img.src = '';
+            img.style.display = 'none';
+            document.getElementById('qrText').style.display = 'block';
+            let container = img.parentNode;
+            container.style.border = '2px dashed #bbb';
+            container.style.background = '#fafafa';
+            document.getElementById('qrInput').value = '';
+            document.getElementById('removeQrBtn').style.display = 'none';
         }
     </script>
 </body>
