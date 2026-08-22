@@ -42,7 +42,7 @@
         }
         .logo-container { 
             width: 240px; 
-            height: 90px; 
+            height: 85px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -78,36 +78,46 @@
             border-radius: 6px; 
             background: #fff;
         }
-        /* ប្រើប្រាស់ table ខាងក្នុង info-box ដើម្បីធានាថា Align ស្មើគ្នា 100% */
+        /* តារាងព័ត៌មានខាងលើ Align ឆ្វេងស្មើគ្នា 100% */
         .info-table {
             width: 100%;
             border-collapse: collapse;
             margin: 0;
         }
         .info-table td {
-            border: none;
-            padding: 3px 2px;
+            border: none !important;
+            padding: 2px 0 !important;
             font-size: 11px;
             font-weight: bold;
             color: #222;
-            text-align: left;
+            vertical-align: middle;
+            text-align: left !important;
         }
         .info-table td.label-col {
-            width: 95px;
+            width: 90px;
+            white-space: nowrap;
         }
         .info-table input {
-            width: 100%;
-            padding: 2px 4px;
-            border: 1px solid #bbb;
+            width: 100% !important;
+            padding: 2px 4px !important;
+            border: 1px solid #bbb !important;
             border-radius: 4px;
             font-family: 'Battambang', sans-serif;
             font-size: 11px;
             color: #111;
             font-weight: normal;
-            box-sizing: border-box;
-            text-align: left;
+            box-sizing: border-box !important;
+            text-align: left !important;
             background: #fff;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
+        /* កែសម្រួលពិសេសសម្រាប់ Date Input លើ iOS Safari */
+        input[type="date"]::-webkit-date-and-time-value {
+            text-align: left !important;
+        }
+
         table.inv-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -117,7 +127,7 @@
         table.inv-table th { 
             background-color: #2e7d32 !important; 
             color: #ffffff !important; 
-            padding: 5px; 
+            padding: 4px; 
             font-size: 11px;
             font-weight: bold;
             border: 1px solid #2e7d32 !important;
@@ -126,7 +136,7 @@
         }
         table.inv-table td { 
             border: 1px solid #333; 
-            padding: 3px 5px; 
+            padding: 2px 4px; 
             text-align: center; 
             font-size: 11px;
             color: #111;
@@ -150,6 +160,7 @@
         table.inv-table td input:focus {
             outline: 1px solid #2e7d32;
         }
+
         .qr-section { 
             display: flex; 
             justify-content: space-between;
@@ -161,8 +172,8 @@
             break-inside: avoid;
         }
         .qr-container { 
-            width: 110px; 
-            height: 110px; 
+            width: 100px; 
+            height: 100px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -177,34 +188,44 @@
             font-size: 11px;
             font-weight: bold;
         }
+
+        /* តារាង Totals ខាងក្រោម Align ស្អាតស្មើគ្នា 100% */
         .totals { 
             width: 270px; 
         }
-        .total-row { 
-            display: grid;
-            grid-template-columns: 1fr 100px;
-            align-items: center;
-            padding: 2px 0; 
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            border: none !important;
+            border-bottom: 1px solid #ddd !important;
+            padding: 2px 0 !important;
             font-size: 11px;
             font-weight: bold;
             color: #111;
-            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
         }
-        .total-row.grand-total {
+        .totals-table td.tot-label {
+            text-align: left !important;
+        }
+        .totals-table td.tot-sym {
+            text-align: right !important;
+            width: 25px;
+            padding-right: 4px !important;
+        }
+        .totals-table td.tot-val {
+            text-align: right !important;
+            width: 75px;
+        }
+        .totals-table tr.grand-total-row td {
+            border-bottom: none !important;
             font-size: 13px;
-            border-bottom: none;
             color: #1b5e20;
-            margin-top: 2px;
-        }
-        .total-val-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            text-align: right;
+            padding-top: 4px !important;
         }
         .discount-input {
-            width: 60px;
+            width: 65px;
             text-align: right;
             padding: 1px 3px;
             border: 1px solid #bbb;
@@ -213,12 +234,14 @@
             font-size: 11px;
             color: #111;
             background: #fff;
+            box-sizing: border-box;
         }
+
         .action-btn {
             background-color: #2e7d32;
             color: white;
             border: none;
-            padding: 5px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
             font-family: 'Battambang', sans-serif;
@@ -234,16 +257,32 @@
 
         @media print {
             @page {
-                size: A4;
+                size: A4 portrait;
                 margin: 4mm;
             }
             .no-print { display: none !important; }
             body { background-color: #fff; padding: 0; color: #000; }
-            .invoice-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-            input { border: none !important; background: transparent !important; color: #000 !important; }
+            .invoice-container { 
+                border: none !important; 
+                box-shadow: none !important; 
+                padding: 0 !important; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            input { 
+                border: none !important; 
+                background: transparent !important; 
+                color: #000 !important; 
+                box-shadow: none !important;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                display: none !important;
+            }
             
             thead { display: table-header-group; }
-            tr { page-break-inside: avoid; break-inside: avoid; }
+            tr { page-break-inside: avoid !important; break-inside: avoid !important; }
 
             th {
                 background-color: #2e7d32 !important;
@@ -362,34 +401,30 @@
                 <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
             </div>
             <div class="totals">
-                <div class="total-row">
-                    <span>សរុប (Sub Total):</span>
-                    <div class="total-val-box">
-                        <span id="subSym">$</span>
-                        <span id="subTotal">0.00</span>
-                    </div>
-                </div>
-                <div class="total-row">
-                    <span>បញ្ចុះតម្លៃ (Discount):</span>
-                    <div class="total-val-box">
-                        <span id="discSym">$</span>
-                        <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
-                    </div>
-                </div>
-                <div class="total-row">
-                    <span><input type="checkbox" id="vatToggle" onchange="calculateTotal()"> អាករ (VAT 10%):</span>
-                    <div class="total-val-box">
-                        <span id="vatSym">$</span>
-                        <span id="vatAmount">0.00</span>
-                    </div>
-                </div>
-                <div class="total-row grand-total">
-                    <span>សរុបទាំងអស់ (Grand Total):</span>
-                    <div class="total-val-box">
-                        <span id="grandSym">$</span>
-                        <span id="grandTotal">0.00</span>
-                    </div>
-                </div>
+                <table class="totals-table">
+                    <tr>
+                        <td class="tot-label">សរុប (Sub Total):</td>
+                        <td class="tot-sym" id="subSym">$</td>
+                        <td class="tot-val" id="subTotal">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="tot-label">បញ្ចុះតម្លៃ (Discount):</td>
+                        <td class="tot-sym" id="discSym">$</td>
+                        <td class="tot-val">
+                            <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tot-label"><input type="checkbox" id="vatToggle" onchange="calculateTotal()"> អាករ (VAT 10%):</td>
+                        <td class="tot-sym" id="vatSym">$</td>
+                        <td class="tot-val" id="vatAmount">0.00</td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td class="tot-label">សរុបទាំងអស់ (Grand Total):</td>
+                        <td class="tot-sym" id="grandSym">$</td>
+                        <td class="tot-val" id="grandTotal">0.00</td>
+                    </tr>
+                </table>
             </div>
         </div>
 
