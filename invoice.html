@@ -40,10 +40,10 @@
             padding-bottom: 6px; 
             margin-bottom: 8px;
         }
-        /* ពង្រីក Logo ឱ្យធំស្អាត */
+        /* Logo ធំស្អាតលើអេក្រង់ */
         .logo-container { 
-            width: 320px; 
-            height: 120px; 
+            width: 300px; 
+            height: 115px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -61,7 +61,7 @@
             text-align: center;
         }
         .title { 
-            font-size: 26px; 
+            font-size: 24px; 
             font-weight: bold; 
             color: #1b5e20; 
             text-decoration: underline; 
@@ -94,7 +94,7 @@
             text-align: left !important;
         }
         .info-table td.label-col {
-            width: 95px;
+            width: 100px;
             white-space: nowrap;
         }
         .info-table input {
@@ -113,8 +113,16 @@
             -moz-appearance: none;
             appearance: none;
         }
+        /* បង្ខំឱ្យកាលបរិច្ឆេទលើ iOS Safari Align ឆ្វេងស្មើគ្នា 100% */
+        input[type="date"] {
+            text-align: left !important;
+        }
         input[type="date"]::-webkit-date-and-time-value {
             text-align: left !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: flex !important;
+            justify-content: flex-start !important;
         }
 
         table.inv-table { 
@@ -171,10 +179,10 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
-        /* ពង្រីក QR Code ឱ្យធំស្អាត */
+        /* QR Code ធំស្អាតលើអេក្រង់ */
         .qr-container { 
-            width: 150px; 
-            height: 150px; 
+            width: 140px; 
+            height: 140px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -255,18 +263,18 @@
             font-size: 11px;
         }
 
-        /* កូដដោះស្រាយការ Print ឱ្យរត់ចូលក្នុង ១ ទំព័រ A4 ស្ថាពរ */
+        /* ផ្នែក PRINT/PDF៖ កែសម្រួលពិសេសដើម្បីធានាថា ២៥+ ជួរ នៅតែចូលក្នុង 1 ទំព័រ A4 ស្ថាពរ */
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 3mm 5mm;
+                margin: 3mm 4mm;
             }
             .no-print { display: none !important; }
             html, body { 
-                background-color: #fff; 
+                background-color: #fff !important; 
                 padding: 0 !important; 
                 margin: 0 !important;
-                color: #000; 
+                color: #000 !important; 
             }
             .invoice-container { 
                 border: none !important; 
@@ -274,8 +282,6 @@
                 padding: 0 !important; 
                 width: 100% !important; 
                 max-width: 100% !important; 
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
             }
             input { 
                 border: none !important; 
@@ -287,25 +293,67 @@
                 display: none !important;
             }
             
-            /* បង្រួមគម្លាតជួរតារាងពេល Print ដើម្បីផ្ទុកបានច្រើនជួរក្នុង ១ ទំព័រ */
+            /* បង្រួមកម្ពស់ធាតុផ្សំសម្រាប់ PDF ធានាថាផ្ទុកបាន ២៥+ ជួរក្នុង ១ ទំព័រ */
+            .header {
+                margin-bottom: 3px !important;
+                padding-bottom: 3px !important;
+            }
+            .logo-container {
+                height: 65px !important;
+                width: 180px !important;
+            }
+            .title {
+                font-size: 18px !important;
+            }
+            .info-grid {
+                margin-bottom: 3px !important;
+                gap: 5px !important;
+            }
+            .info-box {
+                padding: 2px 5px !important;
+            }
+            .info-table td {
+                padding: 1px 0 !important;
+                font-size: 9.5px !important;
+            }
+            .info-table input {
+                font-size: 9.5px !important;
+                padding: 0 !important;
+            }
+            table.inv-table {
+                margin-top: 2px !important;
+                margin-bottom: 3px !important;
+            }
             table.inv-table th {
-                padding: 3px 2px !important;
-                font-size: 10px !important;
+                padding: 2px 2px !important;
+                font-size: 9.5px !important;
             }
             table.inv-table td {
                 padding: 1px 2px !important;
-                font-size: 9.5px !important;
+                font-size: 8.5px !important;
+                line-height: 1.0 !important;
             }
             table.inv-table td input {
-                font-size: 9.5px !important;
+                font-size: 8.5px !important;
             }
-            .logo-container {
-                height: 90px !important;
-                width: 240px !important;
+            .qr-section {
+                margin-top: 3px !important;
+                padding-top: 3px !important;
             }
             .qr-container {
-                height: 110px !important;
-                width: 110px !important;
+                width: 80px !important;
+                height: 80px !important;
+            }
+            .totals {
+                width: 220px !important;
+            }
+            .totals-table td {
+                padding: 1px 0 !important;
+                font-size: 9.5px !important;
+            }
+            .discount-input {
+                font-size: 9.5px !important;
+                padding: 0 !important;
             }
 
             thead { display: table-header-group; }
