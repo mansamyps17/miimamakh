@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>វិក្កយបត្រ (TAX INVOICE)</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body { 
             font-family: 'Battambang', sans-serif; 
@@ -38,6 +39,7 @@
             font-weight: bold; 
             color: #777;
             border: 1px dashed #aaa;
+            cursor: pointer;
         }
         .title { 
             font-size: 22px; 
@@ -61,12 +63,23 @@
         .info-box p {
             margin: 6px 0;
             font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .info-box input {
+            width: 65%;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 13px;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 10px; 
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         th { 
             background-color: #2e7d32; 
@@ -77,9 +90,20 @@
         }
         td { 
             border: 1px solid #aaa; 
-            padding: 8px 10px; 
+            padding: 6px 8px; 
             text-align: center; 
             font-size: 13px;
+        }
+        td input {
+            width: 100%;
+            border: none;
+            text-align: center;
+            font-family: 'Battambang', sans-serif;
+            font-size: 13px;
+            background: transparent;
+        }
+        td input:focus {
+            outline: 1px solid #2e7d32;
         }
         .qr-section { 
             display: flex; 
@@ -99,6 +123,7 @@
             background: #fdfdfd;
             font-weight: bold;
             color: #555;
+            cursor: pointer;
         }
         .totals { 
             width: 320px; 
@@ -106,6 +131,7 @@
         .total-row { 
             display: flex; 
             justify-content: space-between; 
+            align-items: center;
             padding: 6px 0; 
             font-size: 13px;
             border-bottom: 1px solid #eee;
@@ -117,6 +143,17 @@
             color: #2e7d32;
             margin-top: 5px;
         }
+        .action-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Battambang', sans-serif;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
         .back-btn {
             display: inline-block;
             margin-bottom: 15px;
@@ -124,49 +161,63 @@
             color: #007bff;
             font-weight: bold;
         }
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: #fff; padding: 0; }
+            .invoice-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+            input { border: none !important; background: transparent !important; }
+        }
     </style>
 </head>
 <body>
     <div class="invoice-container">
-        <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
+        <a href="index.html" class="back-btn no-print">← ត្រឡប់ក្រោយ</a>
         
         <div class="header">
             <div>
-                <div class="logo-placeholder">Logo</div>
-                <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: bold;">ឈ្មោះក្រុមហ៊ុន / Company Name</p>
+                <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
+                    <span id="logoText">ដាក់ Logo</span>
+                    <img id="logoPreview" src="" style="max-width:100%; max-height:100%; display:none;">
+                </div>
+                <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(event)">
+                <input type="text" value="ឈ្មោះក្រុមហ៊ុន / Company Name" style="margin-top: 5px; font-size: 13px; font-weight: bold; border: 1px dashed #ccc; padding: 2px;">
             </div>
-            <div class="title">វិក្កយបត្រ (TAX INVOICE)[cite: 1]</div>
+            <div class="title">វិក្កយបត្រ (TAX INVOICE)</div>
         </div>
 
         <div class="info-grid">
             <div class="info-box">
-                <p><strong>អតិថិជន (Customer Name):</strong> .......................</p>
-                <p><strong>លេខទូរស័ព្ទ (Phone):</strong> .......................</p>
-                <p><strong>អាសយដ្ឋាន (Address):</strong> .......................</p>
+                <p><strong>អតិថិជន:</strong> <input type="text" placeholder="ឈ្មោះអតិថិជន"></p>
+                <p><strong>លេខទូរស័ព្ទ:</strong> <input type="text" placeholder="លេខទូរស័ព្ទ"></p>
+                <p><strong>អាសយដ្ឋាន:</strong> <input type="text" placeholder="អាសយដ្ឋាន"></p>
             </div>
             <div class="info-box">
-                <p><strong>វិក្កយបត្រលេខ (Invoice No):</strong> .......................</p>
-                <p><strong>កាលបរិច្ឆេទ (Date):</strong> 04-08-2026</p>
+                <p><strong>វិក្កយបត្រលេខ:</strong> <input type="text" placeholder="Invoice No"></p>
+                <p><strong>កាលបរិច្ឆេទ:</strong> <input type="date" id="invDate"></p>
             </div>
         </div>
 
-        <table>
+        <button onclick="addRow()" class="action-btn no-print">+ បន្ថែមទំនិញ</button>
+
+        <table class="inv-table">
             <thead>
                 <tr>
-                    <th>លរ (No)</th>
+                    <th style="width: 40px;">លរ</th>
                     <th>បរិយាយ (Description)</th>
-                    <th>បរិមាណ (Qty)</th>
-                    <th>តម្លៃ (Price)</th>
-                    <th>តម្លៃសរុប (Amount)</th>
+                    <th style="width: 70px;">បរិមាណ</th>
+                    <th style="width: 90px;">តម្លៃ ($)</th>
+                    <th style="width: 100px;">តម្លៃសរុប</th>
+                    <th class="no-print" style="width: 50px;">លុប</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBody">
                 <tr>
                     <td>1</td>
-                    <td>Product Name</td>
-                    <td>1</td>
-                    <td>$ 0.00</td>
-                    <td>$ 0.00</td>
+                    <td><input type="text" value="Product Name"></td>
+                    <td><input type="number" value="1" oninput="calculateTotal()"></td>
+                    <td><input type="number" value="0.00" step="0.01" oninput="calculateTotal()"></td>
+                    <td class="amount">-$ 0.00</td>
+                    <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
                 </tr>
             </tbody>
         </table>
@@ -174,27 +225,111 @@
         <div class="qr-section">
             <div>
                 <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: bold;">Scan Pay Here:</p>
-                <div class="qr-placeholder">QR Code</div>
+                <div class="qr-placeholder" onclick="document.getElementById('qrInput').click()">
+                    <span id="qrText">ដាក់ QR</span>
+                    <img id="qrPreview" src="" style="max-width:100%; max-height:100%; display:none;">
+                </div>
+                <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
             </div>
             <div class="totals">
                 <div class="total-row">
                     <span>សរុប (Sub Total):</span>
-                    <span>$ 0.00</span>
+                    <span id="subTotal">$ 0.00</span>
                 </div>
                 <div class="total-row">
                     <span>បញ្ចុះតម្លៃ (Discount):</span>
-                    <span>$ 0.00</span>
+                    <input type="number" id="discount" value="0" step="0.01" oninput="calculateTotal()" style="width: 80px; text-align: right; padding: 2px;">
                 </div>
                 <div class="total-row">
                     <span>អាករ (VAT 10%):</span>
-                    <span>$ 0.00[cite: 1]</span>
+                    <span id="vatAmount">$ 0.00</span>
                 </div>
                 <div class="total-row grand-total">
-                    <span>សរុបទាំងអស់ (Grand Total):</span>
-                    <span>$ 0.00[cite: 1]</span>
+                    <span>សរុបทั้งหมด (Grand Total):</span>
+                    <span id="grandTotal">$ 0.00</span>
                 </div>
             </div>
         </div>
+
+        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 20px; padding: 12px; font-size: 15px;">បោះពុម្ព / Save ជា PDF</button>
     </div>
+
+    <script>
+        // កំណត់ថ្ងៃខែបច្ចុប្បន្នស្វ័យប្រវត្តិ
+        document.getElementById('invDate').valueAsDate = new Date();
+
+        function addRow() {
+            let table = document.getElementById('tableBody');
+            let rowCount = table.rows.length + 1;
+            let row = table.insertRow();
+            row.innerHTML = `
+                <td>${rowCount}</td>
+                <td><input type="text" value="Product Name"></td>
+                <td><input type="number" value="1" oninput="calculateTotal()"></td>
+                <td><input type="number" value="0.00" step="0.01" oninput="calculateTotal()"></td>
+                <td class="amount">$ 0.00</td>
+                <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            `;
+            calculateTotal();
+        }
+
+        function deleteRow(btn) {
+            let row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateRowNumbers();
+            calculateTotal();
+        }
+
+        function updateRowNumbers() {
+            let rows = document.getElementById('tableBody').rows;
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].innerText = i + 1;
+            }
+        }
+
+        function calculateTotal() {
+            let rows = document.getElementById('tableBody').rows;
+            let subTotal = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                let qty = parseFloat(rows[i].cells[2].getElementsByTagName('input')[0].value) || 0;
+                let price = parseFloat(rows[i].cells[3].getElementsByTagName('input')[0].value) || 0;
+                let amount = qty * price;
+                rows[i].cells[4].innerText = '$ ' + amount.toFixed(2);
+                subTotal += amount;
+            }
+
+            let discount = parseFloat(document.getElementById('discount').value) || 0;
+            let afterDiscount = subTotal - discount;
+            let vat = afterDiscount * 0.10;
+            let grandTotal = afterDiscount + vat;
+
+            document.getElementById('subTotal').innerText = '$ ' + subTotal.toFixed(2);
+            document.getElementById('vatAmount').innerText = '$ ' + vat.toFixed(2);
+            document.getElementById('grandTotal').innerText = '$ ' + grandTotal.toFixed(2);
+        }
+
+        function loadLogo(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let output = document.getElementById('logoPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+                document.getElementById('logoText').style.display = 'none';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function loadQR(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let output = document.getElementById('qrPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+                document.getElementById('qrText').style.display = 'none';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 </body>
 </html>
