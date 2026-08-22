@@ -31,8 +31,6 @@
             background: #eee;
             padding: 8px 12px;
             border-radius: 6px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
         .header { 
             display: flex; 
@@ -216,7 +214,7 @@
 
         @media print {
             @page {
-                size: var(--page-size, A4);
+                size: A4;
                 margin: 5mm;
             }
             .no-print { display: none !important; }
@@ -251,29 +249,15 @@
 </head>
 <body>
     <div class="invoice-container">
-        <!-- ផ្នែកជ្រើសរើសទំហំក្រដាស និងរូបិយប័ណ្ណ -->
+        <!-- ផ្នែកប៊ូតុងត្រឡប់ក្រោយ និងជ្រើសរើសរូបិយប័ណ្ណ -->
         <div class="top-controls no-print">
             <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
-            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <div>
-                    <label for="paperSize" style="font-size: 12px; font-weight: bold;">ទំហំក្រដាស:</label>
-                    <select id="paperSize" onchange="changePaperSize()" style="padding: 3px 6px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
-                        <option value="A4">A4</option>
-                        <option value="letter">Letter (US)</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="currency" style="font-size: 12px; font-weight: bold;">រូបិយប័ណ្ណ:</label>
-                    <select id="currency" onchange="calculateTotal()" style="padding: 3px 6px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
-                        <option value="$">ដុល្លារ ($)</option>
-                        <option value="៛">រៀល (៛)</option>
-                    </select>
-                </div>
-                <div id="rateContainer" style="display: none; align-items: center; gap: 5px;">
-                    <label style="font-size: 12px; font-weight: bold;">អត្រា ($1 =):</label>
-                    <input type="number" id="exchangeRate" value="4100" oninput="calculateTotal()" style="width: 60px; padding: 2px 4px; font-size: 12px; border: 1px solid #aaa; border-radius: 4px; text-align: center;">
-                    <span style="font-size: 12px;">៛</span>
-                </div>
+            <div>
+                <label for="currency" style="font-size: 12px; font-weight: bold;">រូបិយប័ណ្ណ:</label>
+                <select id="currency" onchange="calculateTotal()" style="padding: 3px 6px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
+                    <option value="$">ដុល្លារ ($)</option>
+                    <option value="៛">រៀល (៛)</option>
+                </select>
             </div>
         </div>
         
@@ -365,11 +349,6 @@
     <script>
         document.getElementById('invDate').valueAsDate = new Date();
 
-        function changePaperSize() {
-            let size = document.getElementById('paperSize').value;
-            document.documentElement.style.setProperty('--page-size', size);
-        }
-
         function addRow() {
             let table = document.getElementById('tableBody');
             let rowCount = table.rows.length + 1;
@@ -402,14 +381,6 @@
 
         function calculateTotal() {
             let curr = document.getElementById('currency').value;
-            let rateContainer = document.getElementById('rateContainer');
-            let rate = parseFloat(document.getElementById('exchangeRate').value) || 4100;
-
-            if (curr === '៛') {
-                rateContainer.style.display = 'flex';
-            } else {
-                rateContainer.style.display = 'none';
-            }
 
             document.getElementById('thPrice').innerText = `តម្លៃ (${curr})`;
             document.getElementById('thAmount').innerText = `តម្លៃសរុប`;
