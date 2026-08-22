@@ -7,7 +7,7 @@
         body { 
             font-family: 'Battambang', sans-serif; 
             margin: 0; 
-            padding: 20px; 
+            padding: 10px; 
             color: #111; 
             background-color: #f9f9f9;
             display: flex;
@@ -19,21 +19,30 @@
             margin: auto; 
             background: #fff;
             border: 1px solid #ccc; 
-            padding: 30px; 
+            padding: 20px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             box-sizing: border-box;
+        }
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #eee;
+            padding: 8px 12px;
+            border-radius: 6px;
         }
         .header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
             border-bottom: 2px solid #2e7d32; 
-            padding-bottom: 15px; 
-            margin-bottom: 20px;
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
         }
         .logo-container { 
-            width: 300px; 
-            height: 120px; 
+            width: 250px; 
+            height: 100px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -51,7 +60,7 @@
             text-align: center;
         }
         .title { 
-            font-size: 26px; 
+            font-size: 24px; 
             font-weight: bold; 
             color: #1b5e20; 
             text-decoration: underline; 
@@ -60,18 +69,18 @@
         .info-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-bottom: 20px; 
+            gap: 12px; 
+            margin-bottom: 15px; 
         }
         .info-box { 
             border: 1px solid #aaa; 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 6px; 
             background: #fff;
         }
         .info-box p {
-            margin: 6px 0;
-            font-size: 13px;
+            margin: 4px 0;
+            font-size: 12px;
             font-weight: bold;
             color: #222;
             display: flex;
@@ -80,25 +89,25 @@
         }
         .info-box input {
             width: 65%;
-            padding: 4px 6px;
+            padding: 3px 5px;
             border: 1px solid #bbb;
             border-radius: 4px;
             font-family: 'Battambang', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             color: #111;
             font-weight: normal;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 10px; 
-            margin-bottom: 15px;
+            margin-top: 5px; 
+            margin-bottom: 10px;
         }
         th { 
             background-color: #2e7d32 !important; 
             color: #ffffff !important; 
-            padding: 10px; 
-            font-size: 13px;
+            padding: 8px; 
+            font-size: 12px;
             font-weight: bold;
             border: 1px solid #2e7d32 !important;
             -webkit-print-color-adjust: exact;
@@ -106,9 +115,9 @@
         }
         td { 
             border: 1px solid #333; 
-            padding: 6px 8px; 
+            padding: 5px 6px; 
             text-align: center; 
-            font-size: 13px;
+            font-size: 12px;
             color: #111;
         }
         td input {
@@ -116,7 +125,7 @@
             border: none;
             text-align: center;
             font-family: 'Battambang', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             background: transparent;
             color: #111;
         }
@@ -127,13 +136,13 @@
             display: flex; 
             justify-content: space-between;
             align-items: flex-start; 
-            margin-top: 20px; 
+            margin-top: 10px; 
             border-top: 1px dashed #aaa;
-            padding-top: 20px;
+            padding-top: 10px;
         }
         .qr-container { 
-            width: 180px; 
-            height: 180px; 
+            width: 150px; 
+            height: 150px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -145,7 +154,7 @@
         }
         .qr-container span {
             color: #444;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
         }
         .totals { 
@@ -155,17 +164,17 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            padding: 6px 0; 
-            font-size: 13px;
+            padding: 4px 0; 
+            font-size: 12px;
             font-weight: bold;
             color: #111;
             border-bottom: 1px solid #ddd;
         }
         .total-row.grand-total {
-            font-size: 16px;
+            font-size: 15px;
             border-bottom: none;
             color: #1b5e20;
-            margin-top: 5px;
+            margin-top: 4px;
         }
         .discount-input {
             width: 70px;
@@ -174,7 +183,7 @@
             border: 1px solid #bbb;
             border-radius: 4px;
             font-family: 'Battambang', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             color: #111;
             background: #fff;
         }
@@ -187,23 +196,20 @@
             cursor: pointer;
             font-family: 'Battambang', sans-serif;
             font-size: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .back-btn {
-            display: inline-block;
-            margin-bottom: 15px;
             text-decoration: none;
             color: #007bff;
             font-weight: bold;
+            font-size: 13px;
         }
 
+        /* Dynamic Page Size via CSS */
         @media print {
             @page {
-                size: A4;
-                margin-top: 15mm;
-                margin-right: 10mm;
-                margin-bottom: 10mm;
-                margin-left: 10mm;
+                size: var(--page-size, A4);
+                margin: 5mm;
             }
             .no-print { display: none !important; }
             body { background-color: #fff; padding: 0; color: #000; }
@@ -237,7 +243,17 @@
 </head>
 <body>
     <div class="invoice-container">
-        <a href="index.html" class="back-btn no-print">← ត្រឡប់ក្រោយ</a>
+        <!-- ផ្នែកជ្រើសរើសទំហំក្រដាស និងប៊ូតុងត្រឡប់ក្រោយ -->
+        <div class="top-controls no-print">
+            <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
+            <div>
+                <label for="paperSize" style="font-size: 13px; font-weight: bold;">ជ្រើសរើសទំហំក្រដាស:</label>
+                <select id="paperSize" onchange="changePaperSize()" style="padding: 4px 8px; font-family: 'Battambang', sans-serif; font-size: 12px; border-radius: 4px; border: 1px solid #aaa;">
+                    <option value="A4">A4</option>
+                    <option value="letter">Letter (US)</option>
+                </select>
+            </div>
+        </div>
         
         <div class="header">
             <div>
@@ -269,11 +285,11 @@
                 <tr>
                     <th style="width: 40px;">លរ</th>
                     <th>បរិយាយ (Description)</th>
-                    <th style="width: 80px;">ឯកតា</th>
-                    <th style="width: 70px;">បរិមាណ</th>
-                    <th style="width: 90px;">តម្លៃ ($)</th>
-                    <th style="width: 100px;">តម្លៃសរុប</th>
-                    <th class="no-print" style="width: 50px;">លុប</th>
+                    <th style="width: 70px;">ឯកតា</th>
+                    <th style="width: 60px;">បរិមាណ</th>
+                    <th style="width: 80px;">តម្លៃ ($)</th>
+                    <th style="width: 90px;">តម្លៃសរុប</th>
+                    <th class="no-print" style="width: 40px;">លុប</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -291,7 +307,7 @@
 
         <div class="qr-section">
             <div>
-                <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: bold;">Scan Pay Here:</p>
+                <p style="margin: 0 0 5px 0; font-size: 11px; font-weight: bold;">Scan Pay Here:</p>
                 <div class="qr-container" onclick="document.getElementById('qrInput').click()">
                     <span id="qrText">+ ដាក់ QR</span>
                     <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
@@ -321,11 +337,16 @@
             </div>
         </div>
 
-        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 20px; padding: 12px; font-size: 15px;">បោះពុម្ព / Save ជា PDF (A4)</button>
+        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 15px; padding: 10px; font-size: 14px;">បោះពុម្ព / Save ជា PDF</button>
     </div>
 
     <script>
         document.getElementById('invDate').valueAsDate = new Date();
+
+        function changePaperSize() {
+            let size = document.getElementById('paperSize').value;
+            document.documentElement.style.setProperty('--page-size', size);
+        }
 
         function addRow() {
             let table = document.getElementById('tableBody');
