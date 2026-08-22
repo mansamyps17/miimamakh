@@ -7,7 +7,7 @@
         body { 
             font-family: 'Battambang', sans-serif; 
             margin: 0; 
-            padding: 10px; 
+            padding: 5px; 
             color: #111; 
             background-color: #f9f9f9;
             display: flex;
@@ -19,7 +19,7 @@
             margin: auto; 
             background: #fff;
             border: 1px solid #ccc; 
-            padding: 20px; 
+            padding: 15px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
             box-sizing: border-box;
         }
@@ -27,9 +27,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background: #eee;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
         }
         .header { 
@@ -37,12 +37,12 @@
             justify-content: space-between; 
             align-items: center;
             border-bottom: 2px solid #2e7d32; 
-            padding-bottom: 10px; 
-            margin-bottom: 15px;
+            padding-bottom: 8px; 
+            margin-bottom: 10px;
         }
         .logo-container { 
             width: 320px; 
-            height: 130px; 
+            height: 120px; 
             display: flex; 
             align-items: center; 
             justify-content: flex-start; 
@@ -69,12 +69,12 @@
         .info-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-bottom: 15px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
         }
         .info-box { 
             border: 1px solid #aaa; 
-            padding: 10px; 
+            padding: 8px 10px; 
             border-radius: 6px; 
             background: #fff;
         }
@@ -88,7 +88,7 @@
             justify-content: space-between;
         }
         .info-box input {
-            width: 65%;
+            width: 62%;
             padding: 3px 5px;
             border: 1px solid #bbb;
             border-radius: 4px;
@@ -96,17 +96,18 @@
             font-size: 12px;
             color: #111;
             font-weight: normal;
+            box-sizing: border-box;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 5px; 
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         th { 
             background-color: #2e7d32 !important; 
             color: #ffffff !important; 
-            padding: 8px; 
+            padding: 6px; 
             font-size: 12px;
             font-weight: bold;
             border: 1px solid #2e7d32 !important;
@@ -115,14 +116,14 @@
         }
         td { 
             border: 1px solid #333; 
-            padding: 5px 6px; 
+            padding: 4px 6px; 
             text-align: center; 
             font-size: 12px;
             color: #111;
         }
         td.desc-cell {
             text-align: left;
-            padding-left: 10px;
+            padding-left: 8px;
         }
         td input {
             width: 100%;
@@ -143,13 +144,13 @@
             display: flex; 
             justify-content: space-between;
             align-items: flex-start; 
-            margin-top: 10px; 
+            margin-top: 8px; 
             border-top: 1px dashed #aaa;
-            padding-top: 10px;
+            padding-top: 8px;
         }
         .qr-container { 
-            width: 150px; 
-            height: 150px; 
+            width: 130px; 
+            height: 130px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -161,27 +162,27 @@
         }
         .qr-container span {
             color: #444;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
         }
         .totals { 
-            width: 290px; 
+            width: 280px; 
         }
         .total-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            padding: 4px 0; 
+            padding: 3px 0; 
             font-size: 12px;
             font-weight: bold;
             color: #111;
             border-bottom: 1px solid #ddd;
         }
         .total-row.grand-total {
-            font-size: 15px;
+            font-size: 14px;
             border-bottom: none;
             color: #1b5e20;
-            margin-top: 4px;
+            margin-top: 3px;
         }
         .discount-input {
             width: 70px;
@@ -198,18 +199,18 @@
             background-color: #2e7d32;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-family: 'Battambang', sans-serif;
-            font-size: 12px;
-            margin-bottom: 8px;
+            font-size: 11px;
+            margin-bottom: 5px;
         }
         .back-btn {
             text-decoration: none;
             color: #007bff;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         @media print {
@@ -249,7 +250,6 @@
 </head>
 <body>
     <div class="invoice-container">
-        <!-- ផ្នែកប៊ូតុងត្រឡប់ក្រោយ និងជ្រើសរើសរូបិយប័ណ្ណ -->
         <div class="top-controls no-print">
             <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
             <div>
@@ -343,7 +343,7 @@
             </div>
         </div>
 
-        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 15px; padding: 10px; font-size: 14px;">បោះពុម្ព / Save ជា PDF</button>
+        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 10px; padding: 8px; font-size: 13px;">បោះពុម្ព / Save ជា PDF</button>
     </div>
 
     <script>
