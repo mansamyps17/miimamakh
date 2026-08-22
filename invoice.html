@@ -88,8 +88,8 @@
             justify-content: space-between;
         }
         .info-box input {
-            width: 55%;
-            padding: 2px 4px;
+            width: 50%;
+            padding: 2px 6px;
             border: 1px solid #bbb;
             border-radius: 4px;
             font-family: 'Battambang', sans-serif;
@@ -169,7 +169,7 @@
             font-weight: bold;
         }
         .totals { 
-            width: 280px; 
+            width: 290px; 
         }
         .total-row { 
             display: flex; 
@@ -187,8 +187,14 @@
             color: #1b5e20;
             margin-top: 3px;
         }
+        .total-value-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100px;
+            text-align: right;
+        }
         .discount-input {
-            width: 65px;
+            width: 60px;
             text-align: right;
             padding: 2px 4px;
             border: 1px solid #bbb;
@@ -329,22 +335,31 @@
             <div class="totals">
                 <div class="total-row">
                     <span>សរុប (Sub Total):</span>
-                    <span id="subTotal">$ 0.00</span>
+                    <div class="total-value-container">
+                        <span id="subSym">$</span>
+                        <span id="subTotal">0.00</span>
+                    </div>
                 </div>
                 <div class="total-row">
                     <span>បញ្ចុះតម្លៃ (Discount):</span>
-                    <div>
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
                         <span id="discSym">$</span>
                         <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
                     </div>
                 </div>
                 <div class="total-row">
                     <span><input type="checkbox" id="vatToggle" onchange="calculateTotal()"> អាករ (VAT 10%):</span>
-                    <span id="vatAmount">$ 0.00</span>
+                    <div class="total-value-container">
+                        <span id="vatSym">$</span>
+                        <span id="vatAmount">0.00</span>
+                    </div>
                 </div>
                 <div class="total-row grand-total">
                     <span>សរុបទាំងអស់ (Grand Total):</span>
-                    <span id="grandTotal">$ 0.00</span>
+                    <div class="total-value-container">
+                        <span id="grandSym">$</span>
+                        <span id="grandTotal">0.00</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,7 +405,10 @@
 
             document.getElementById('thPrice').innerText = `តម្លៃ (${curr})`;
             document.getElementById('thAmount').innerText = `តម្លៃសរុប`;
+            document.getElementById('subSym').innerText = curr;
             document.getElementById('discSym').innerText = curr;
+            document.getElementById('vatSym').innerText = curr;
+            document.getElementById('grandSym').innerText = curr;
 
             let rows = document.getElementById('tableBody').rows;
             let subTotal = 0;
@@ -424,9 +442,9 @@
                 document.getElementById('vatAmount').innerText = vat.toLocaleString('en-US') + ' ៛';
                 document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('en-US') + ' ៛';
             } else {
-                document.getElementById('subTotal').innerText = '$ ' + subTotal.toFixed(2);
-                document.getElementById('vatAmount').innerText = '$ ' + vat.toFixed(2);
-                document.getElementById('grandTotal').innerText = '$ ' + grandTotal.toFixed(2);
+                document.getElementById('subTotal').innerText = subTotal.toFixed(2);
+                document.getElementById('vatAmount').innerText = vat.toFixed(2);
+                document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
             }
         }
 
