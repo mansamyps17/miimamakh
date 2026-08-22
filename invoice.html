@@ -74,21 +74,22 @@
         }
         .info-box { 
             border: 1px solid #aaa; 
-            padding: 8px 10px; 
+            padding: 8px 12px; 
             border-radius: 6px; 
             background: #fff;
         }
-        .info-box p {
-            margin: 4px 0;
+        /* កែសម្រួលប្រអប់ព័ត៌មានផ្នែកខាងលើឱ្យមាន Grid ច្បាស់លាស់ Align ស្មើគ្នា */
+        .info-row {
+            display: grid;
+            grid-template-columns: 105px 1fr;
+            align-items: center;
+            margin: 5px 0;
             font-size: 12px;
             font-weight: bold;
             color: #222;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-        .info-box input {
-            width: 50%;
+        .info-row input {
+            width: 100%;
             padding: 2px 6px;
             border: 1px solid #bbb;
             border-radius: 4px;
@@ -97,7 +98,7 @@
             color: #111;
             font-weight: normal;
             box-sizing: border-box;
-            text-align: left !important;
+            text-align: left;
         }
         table { 
             width: 100%; 
@@ -169,11 +170,11 @@
             font-weight: bold;
         }
         .totals { 
-            width: 290px; 
+            width: 300px; 
         }
         .total-row { 
-            display: flex; 
-            justify-content: space-between; 
+            display: grid;
+            grid-template-columns: 1fr 110px;
             align-items: center;
             padding: 3px 0; 
             font-size: 12px;
@@ -187,14 +188,16 @@
             color: #1b5e20;
             margin-top: 3px;
         }
-        .total-value-container {
+        /* តម្រឹមតុការប្រាក់ខាងស្តាំឱ្យស្មើគ្នាគត់ */
+        .total-val-box {
             display: flex;
             justify-content: space-between;
-            width: 100px;
+            align-items: center;
+            width: 100%;
             text-align: right;
         }
         .discount-input {
-            width: 60px;
+            width: 65px;
             text-align: right;
             padding: 2px 4px;
             border: 1px solid #bbb;
@@ -230,7 +233,7 @@
             .no-print { display: none !important; }
             body { background-color: #fff; padding: 0; color: #000; }
             .invoice-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-            input { border: none !important; background: transparent !important; color: #000 !important; text-align: left !important; }
+            input { border: none !important; background: transparent !important; color: #000 !important; }
             
             thead { display: table-header-group; }
             tr { page-break-inside: avoid; break-inside: avoid; }
@@ -286,13 +289,13 @@
 
         <div class="info-grid">
             <div class="info-box">
-                <p><strong>អតិថិជន:</strong> <input type="text" value=""></p>
-                <p><strong>លេខទូរស័ព្ទ:</strong> <input type="text" value=""></p>
-                <p><strong>អាសយដ្ឋាន:</strong> <input type="text" value=""></p>
+                <div class="info-row"><span>អតិថិជន:</span> <input type="text" value=""></div>
+                <div class="info-row"><span>លេខទូរស័ព្ទ:</span> <input type="text" value=""></div>
+                <div class="info-row"><span>អាសយដ្ឋាន:</span> <input type="text" value=""></div>
             </div>
             <div class="info-box">
-                <p><strong>វិក្កយបត្រលេខ:</strong> <input type="text" value=""></p>
-                <p><strong>កាលបរិច្ឆេទ:</strong> <input type="date" id="invDate"></p>
+                <div class="info-row"><span>វិក្កយបត្រលេខ:</span> <input type="text" value=""></div>
+                <div class="info-row"><span>កាលបរិច្ឆេទ:</span> <input type="date" id="invDate"></div>
             </div>
         </div>
 
@@ -317,7 +320,7 @@
                     <td><input type="text" value=""></td>
                     <td><input type="number" value="" oninput="calculateTotal()"></td>
                     <td><input type="number" value="" step="0.01" oninput="calculateTotal()"></td>
-                    <td class="amount">$ 0.00</td>
+                    <td class="amount">0.00</td>
                     <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
                 </tr>
             </tbody>
@@ -335,28 +338,28 @@
             <div class="totals">
                 <div class="total-row">
                     <span>សរុប (Sub Total):</span>
-                    <div class="total-value-container">
+                    <div class="total-val-box">
                         <span id="subSym">$</span>
                         <span id="subTotal">0.00</span>
                     </div>
                 </div>
                 <div class="total-row">
                     <span>បញ្ចុះតម្លៃ (Discount):</span>
-                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
+                    <div class="total-val-box">
                         <span id="discSym">$</span>
                         <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
                     </div>
                 </div>
                 <div class="total-row">
                     <span><input type="checkbox" id="vatToggle" onchange="calculateTotal()"> អាករ (VAT 10%):</span>
-                    <div class="total-value-container">
+                    <div class="total-val-box">
                         <span id="vatSym">$</span>
                         <span id="vatAmount">0.00</span>
                     </div>
                 </div>
                 <div class="total-row grand-total">
                     <span>សរុបទាំងអស់ (Grand Total):</span>
-                    <div class="total-value-container">
+                    <div class="total-val-box">
                         <span id="grandSym">$</span>
                         <span id="grandTotal">0.00</span>
                     </div>
@@ -380,7 +383,7 @@
                 <td><input type="text" value=""></td>
                 <td><input type="number" value="" oninput="calculateTotal()"></td>
                 <td><input type="number" value="" step="0.01" oninput="calculateTotal()"></td>
-                <td class="amount">$ 0.00</td>
+                <td class="amount">0.00</td>
                 <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
             `;
             calculateTotal();
@@ -419,9 +422,9 @@
                 let amount = qty * price;
                 
                 if (curr === '៛') {
-                    rows[i].cells[5].innerText = amount.toLocaleString('en-US') + ' ៛';
+                    rows[i].cells[5].innerText = amount.toLocaleString('en-US');
                 } else {
-                    rows[i].cells[5].innerText = '$ ' + amount.toFixed(2);
+                    rows[i].cells[5].innerText = amount.toFixed(2);
                 }
                 subTotal += amount;
             }
@@ -438,9 +441,9 @@
             let grandTotal = afterDiscount + vat;
 
             if (curr === '៛') {
-                document.getElementById('subTotal').innerText = subTotal.toLocaleString('en-US') + ' ៛';
-                document.getElementById('vatAmount').innerText = vat.toLocaleString('en-US') + ' ៛';
-                document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('en-US') + ' ៛';
+                document.getElementById('subTotal').innerText = subTotal.toLocaleString('en-US');
+                document.getElementById('vatAmount').innerText = vat.toLocaleString('en-US');
+                document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('en-US');
             } else {
                 document.getElementById('subTotal').innerText = subTotal.toFixed(2);
                 document.getElementById('vatAmount').innerText = vat.toFixed(2);
