@@ -206,23 +206,21 @@
                 print-color-adjust: exact;
             }
 
-            .logo-container:has(#logoPreview[style*="display: none"]),
-            .logo-container:not(:has(#logoPreview)) {
+            /* លាក់ស៊ុម និងអក្សរ Logo ទាំងស្រុងពេល Print បើមិនទាន់បានដាក់រូប */
+            .logo-container:not(:has(#logoPreview[src]:not([src=""]))) {
                 border: none !important;
                 background: transparent !important;
             }
-            .logo-container:has(#logoPreview[style*="display: none"]) span,
-            .logo-container:not(:has(#logoPreview)) span {
+            .logo-container:not(:has(#logoPreview[src]:not([src=""]))) span {
                 display: none !important;
             }
 
-            .qr-container:has(#qrPreview[style*="display: none"]),
-            .qr-container:not(:has(#qrPreview)) {
+            /* លាក់ស៊ុម និងអក្សរ QR ទាំងស្រុងពេល Print បើមិនទាន់បានដាក់រូប */
+            .qr-container:not(:has(#qrPreview[src]:not([src=""]))) {
                 border: none !important;
                 background: transparent !important;
             }
-            .qr-container:has(#qrPreview[style*="display: none"]) span,
-            .qr-container:not(:has(#qrPreview)) span {
+            .qr-container:not(:has(#qrPreview[src]:not([src=""]))) span {
                 display: none !important;
             }
         }
