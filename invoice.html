@@ -503,7 +503,7 @@
         <!-- ប៊ូតុង Print / Save PDF និង Save ជារូបភាព -->
         <div class="bottom-buttons no-print">
             <button onclick="window.print()" class="action-btn">🖨️ បោះពុម្ព / Save ជា PDF</button>
-            <button onclick="saveAsImage()" class="action-btn btn-image">🖼️ ទាញយកជារូបភាព (PNG)</button>
+            <button onclick="saveAsImage()" class="action-btn btn-image">🖼️ រក្សាទុកជារូបភាព (PNG)</button>
         </div>
     </div>
 
@@ -648,27 +648,47 @@
             document.getElementById('removeQrBtn').style.display = 'none';
         }
 
-        // មុខងារទាញយកជារូបភាព (Save as Image - PNG)
-        function saveAsImage() {
+        // មុខងារទាញយកជារូបភាព (Save as Image - គាំទ្រការ Save ចូល Photos / Gallery លើ iOS ដោយផ្ទាល់)
+        async function saveAsImage() {
             let container = document.getElementById('invoiceContainer');
             
-            // ប្រើប្រាស់ html2canvas ដោយមិនរាប់បញ្ចូលប៊ូតុង no-print
-            html2canvas(container, {
-                scale: 2, // កម្រិតភាពច្បាស់គុណ ២ (HD)
-                backgroundColor: '#ffffff',
-                useCORS: true,
-                ignoreElements: function(element) {
-                    return element.classList.contains('no-print');
-                }
-            }).then(canvas => {
-                let link = document.createElement('a');
-                link.download = 'វិក្កយបត្រ_INVOICE.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(err => {
+            try {
+                let canvas = await html2canvas(container, {
+                    scale: 2, // កម្រិតភាពច្បាស់គុណ ២ (HD)
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    ignoreElements: function(element) {
+                        return element.classList.contains('no-print');
+                    }
+                });
+
+                canvas.toBlob(async function(blob) {
+                    const file = new File([blob], 'វិក្កយបត្រ_INVOICE.png', { type: 'image/png' });
+                    
+                    // ប្រសិនបើប្រើប្រាស់លើ iOS Safari (iPhone/iPad) វានឹងបើក Share Sheet ឱ្យ Save ចូល Photos ផ្ទាល់
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'វិក្កយបត្រ (INVOICE)'
+                            });
+                            return;
+                        } catch (error) {
+                            if (error.name === 'AbortError') return; // អ្នកប្រើប្រាស់បានចុចបោះបង់
+                        }
+                    }
+
+                    // ប្រសិនបើដំណើរការលើកុំព្យូទ័រ ឬកម្មវិធីផ្សេង
+                    let link = document.createElement('a');
+                    link.download = 'វិក្កយបត្រ_INVOICE.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }, 'image/png');
+
+            } catch (err) {
                 alert('មិនអាចទាញយករូបភាពបានទេ សូមព្យាយាមម្តងទៀត!');
                 console.error(err);
-            });
+            }
         }
     </script>
 </body>
