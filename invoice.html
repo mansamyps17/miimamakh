@@ -2,8 +2,7 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <title>វិក្កយបត្រ (TAX INVOICE)</title>
-    <link rel="stylesheet" href="style.css">
+    <title>វិក្កយបត្រ (INVOICE)</title>
     <style>
         body { 
             font-family: 'Battambang', sans-serif; 
@@ -11,6 +10,8 @@
             padding: 20px; 
             color: #333; 
             background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
         }
         .invoice-container { 
             width: 100%; 
@@ -20,6 +21,7 @@
             border: 1px solid #ccc; 
             padding: 30px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
         .header { 
             display: flex; 
@@ -29,20 +31,16 @@
             padding-bottom: 15px; 
             margin-bottom: 20px;
         }
-        .logo-placeholder { 
-            width: 120px; 
-            height: 60px; 
-            background: #eee; 
+        .logo-container { 
+            width: 180px; 
+            height: 80px; 
             display: flex; 
             align-items: center; 
-            justify-content: center; 
-            font-weight: bold; 
-            color: #777;
-            border: 1px dashed #aaa;
+            justify-content: flex-start; 
             cursor: pointer;
         }
         .title { 
-            font-size: 22px; 
+            font-size: 24px; 
             font-weight: bold; 
             color: #2e7d32; 
             text-decoration: underline; 
@@ -113,16 +111,12 @@
             border-top: 1px dashed #ccc;
             padding-top: 20px;
         }
-        .qr-placeholder { 
+        .qr-container { 
             width: 110px; 
             height: 110px; 
-            border: 1px solid #aaa; 
             display: flex; 
             align-items: center; 
-            justify-content: center; 
-            background: #fdfdfd;
-            font-weight: bold;
-            color: #555;
+            justify-content: flex-start; 
             cursor: pointer;
         }
         .totals { 
@@ -162,6 +156,10 @@
             font-weight: bold;
         }
         @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
             .no-print { display: none !important; }
             body { background-color: #fff; padding: 0; }
             .invoice-container { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
@@ -175,14 +173,14 @@
         
         <div class="header">
             <div>
-                <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
-                    <span id="logoText">ដាក់ Logo</span>
-                    <img id="logoPreview" src="" style="max-width:100%; max-height:100%; display:none;">
+                <div class="logo-container" onclick="document.getElementById('logoInput').click()">
+                    <span id="logoText" style="color: #888; font-size: 13px; border: 1px dashed #ccc; padding: 15px 20px;">ដាក់ Logo</span>
+                    <img id="logoPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
                 </div>
                 <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(event)">
-                <input type="text" value="ឈ្មោះក្រុមហ៊ុន / Company Name" style="margin-top: 5px; font-size: 13px; font-weight: bold; border: 1px dashed #ccc; padding: 2px;">
+                <input type="text" value="ឈ្មោះក្រុមហ៊ុន / Company Name" style="margin-top: 5px; font-size: 13px; font-weight: bold; border: 1px dashed #ccc; padding: 2px; width: 180px;">
             </div>
-            <div class="title">វិក្កយបត្រ (TAX INVOICE)</div>
+            <div class="title"><u>វិក្កយបត្រ (INVOICE)</u></div>
         </div>
 
         <div class="info-grid">
@@ -204,6 +202,7 @@
                 <tr>
                     <th style="width: 40px;">លរ</th>
                     <th>បរិយាយ (Description)</th>
+                    <th style="width: 80px;">ឯកតា</th>
                     <th style="width: 70px;">បរិមាណ</th>
                     <th style="width: 90px;">តម្លៃ ($)</th>
                     <th style="width: 100px;">តម្លៃសរុប</th>
@@ -214,9 +213,10 @@
                 <tr>
                     <td>1</td>
                     <td><input type="text" value="Product Name"></td>
+                    <td><input type="text" value="ឈុត"></td>
                     <td><input type="number" value="1" oninput="calculateTotal()"></td>
                     <td><input type="number" value="0.00" step="0.01" oninput="calculateTotal()"></td>
-                    <td class="amount">-$ 0.00</td>
+                    <td class="amount">$ 0.00</td>
                     <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
                 </tr>
             </tbody>
@@ -225,9 +225,9 @@
         <div class="qr-section">
             <div>
                 <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: bold;">Scan Pay Here:</p>
-                <div class="qr-placeholder" onclick="document.getElementById('qrInput').click()">
-                    <span id="qrText">ដាក់ QR</span>
-                    <img id="qrPreview" src="" style="max-width:100%; max-height:100%; display:none;">
+                <div class="qr-container" onclick="document.getElementById('qrInput').click()">
+                    <span id="qrText" style="color: #888; font-size: 12px; border: 1px dashed #ccc; padding: 25px 20px;">ដាក់ QR Code</span>
+                    <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
                 </div>
                 <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
             </div>
@@ -241,21 +241,20 @@
                     <input type="number" id="discount" value="0" step="0.01" oninput="calculateTotal()" style="width: 80px; text-align: right; padding: 2px;">
                 </div>
                 <div class="total-row">
-                    <span>អាករ (VAT 10%):</span>
+                    <span><input type="checkbox" id="vatToggle" onchange="calculateTotal()" checked> អាករ (VAT 10%):</span>
                     <span id="vatAmount">$ 0.00</span>
                 </div>
                 <div class="total-row grand-total">
-                    <span>សរុបทั้งหมด (Grand Total):</span>
+                    <span>សរុបទាំងអស់ (Grand Total):</span>
                     <span id="grandTotal">$ 0.00</span>
                 </div>
             </div>
         </div>
 
-        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 20px; padding: 12px; font-size: 15px;">បោះពុម្ព / Save ជា PDF</button>
+        <button onclick="window.print()" class="action-btn no-print" style="width: 100%; margin-top: 20px; padding: 12px; font-size: 15px;">បោះពុម្ព / Save ជា PDF (A4)</button>
     </div>
 
     <script>
-        // កំណត់ថ្ងៃខែបច្ចុប្បន្នស្វ័យប្រវត្តិ
         document.getElementById('invDate').valueAsDate = new Date();
 
         function addRow() {
@@ -265,6 +264,7 @@
             row.innerHTML = `
                 <td>${rowCount}</td>
                 <td><input type="text" value="Product Name"></td>
+                <td><input type="text" value="ឯកតា"></td>
                 <td><input type="number" value="1" oninput="calculateTotal()"></td>
                 <td><input type="number" value="0.00" step="0.01" oninput="calculateTotal()"></td>
                 <td class="amount">$ 0.00</td>
@@ -292,16 +292,21 @@
             let subTotal = 0;
 
             for (let i = 0; i < rows.length; i++) {
-                let qty = parseFloat(rows[i].cells[2].getElementsByTagName('input')[0].value) || 0;
-                let price = parseFloat(rows[i].cells[3].getElementsByTagName('input')[0].value) || 0;
+                let qty = parseFloat(rows[i].cells[3].getElementsByTagName('input')[0].value) || 0;
+                let price = parseFloat(rows[i].cells[4].getElementsByTagName('input')[0].value) || 0;
                 let amount = qty * price;
-                rows[i].cells[4].innerText = '$ ' + amount.toFixed(2);
+                rows[i].cells[5].innerText = '$ ' + amount.toFixed(2);
                 subTotal += amount;
             }
 
             let discount = parseFloat(document.getElementById('discount').value) || 0;
             let afterDiscount = subTotal - discount;
-            let vat = afterDiscount * 0.10;
+            
+            let vat = 0;
+            if (document.getElementById('vatToggle').checked) {
+                vat = afterDiscount * 0.10;
+            }
+            
             let grandTotal = afterDiscount + vat;
 
             document.getElementById('subTotal').innerText = '$ ' + subTotal.toFixed(2);
