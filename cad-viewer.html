@@ -2,9 +2,9 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AutoCAD Viewer (DWG & DXF)</title>
-    <!-- Library ជំនួយសម្រាប់ Parse ហ្វាល DXF លើ Browser ដោយផ្ទាល់ -->
+    <!-- Library Parse DXF -->
     <script src="https://cdn.jsdelivr.net/npm/dxf-parser@1.1.2/dist/dxf-parser.min.js"></script>
     <style>
         * {
@@ -16,72 +16,67 @@
         }
         body {
             font-family: 'Battambang', sans-serif;
-            background-color: #1a1a1a;
+            background-color: #121212;
             color: #ffffff;
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* របារឧបករណ៍ខាងលើ (AutoCAD Toolbar) */
         .toolbar {
-            height: 52px;
-            background: #252526;
+            min-height: 50px;
+            background: #1f1f1f;
             border-bottom: 1px solid #333333;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 4px 8px;
             z-index: 100;
+            gap: 6px;
             overflow-x: auto;
             white-space: nowrap;
         }
         .tool-group {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .btn {
-            background: #333333;
-            color: #e0e0e0;
+            background: #2d2d2d;
+            color: #eee;
             border: 1px solid #444;
             padding: 6px 10px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             font-family: 'Battambang', sans-serif;
-            font-size: 11.5px;
+            font-size: 11px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-        }
-        .btn:hover {
-            background: #444;
-            color: #fff;
+            justify-content: center;
+            gap: 4px;
         }
         .btn.active {
-            background: #1b5e20;
-            border-color: #2e7d32;
-            color: #fff;
-        }
-        .btn-open {
-            background: #0d47a1;
-            border-color: #1565c0;
+            background: #2e7d32;
+            border-color: #4caf50;
             color: #fff;
             font-weight: bold;
         }
-        .btn-open:hover {
+        .btn-open {
             background: #1565c0;
+            border-color: #1976d2;
+            color: #fff;
+            font-weight: bold;
         }
 
-        /* ផ្ទៃផ្ទាំងគំនូរ Model Space */
         #viewport {
             flex: 1;
             position: relative;
             background-color: #121212;
             cursor: crosshair;
             touch-action: none;
+            overflow: hidden;
         }
         canvas {
             display: block;
@@ -89,7 +84,49 @@
             height: 100%;
         }
 
-        /* ផ្ទាំង Drag & Drop ពេលមិនទាន់បើកហ្វាល */
+        .floating-controls {
+            position: absolute;
+            right: 12px;
+            bottom: 45px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 50;
+        }
+        .circle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(45, 45, 45, 0.9);
+            border: 1px solid #555;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .measure-card {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid #4caf50;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #4caf50;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 60;
+        }
+
         .empty-placeholder {
             position: absolute;
             top: 50%;
@@ -98,135 +135,70 @@
             text-align: center;
             border: 2px dashed #444;
             border-radius: 12px;
-            padding: 35px 25px;
-            background: rgba(26, 26, 26, 0.9);
+            padding: 30px 20px;
+            background: rgba(25, 25, 25, 0.95);
             cursor: pointer;
             max-width: 90%;
             z-index: 10;
         }
-        .empty-placeholder .icon {
-            font-size: 45px;
-            margin-bottom: 12px;
-        }
-        .empty-placeholder h3 {
-            font-size: 16px;
-            margin-bottom: 6px;
-            color: #4caf50;
-        }
-        .empty-placeholder p {
-            font-size: 12px;
-            color: #aaa;
-            line-height: 1.5;
-        }
 
-        /* ផ្ទាំងគ្រប់គ្រងស្រទាប់ (Layer Panel) */
-        .layer-panel {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 220px;
-            max-height: 70%;
-            background: rgba(30, 30, 30, 0.95);
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 10px;
-            display: none;
-            flex-direction: column;
-            z-index: 50;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .layer-header {
-            font-size: 12px;
-            font-weight: bold;
-            color: #4caf50;
-            padding-bottom: 6px;
-            border-bottom: 1px solid #444;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .layer-list {
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .layer-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #ccc;
-        }
-        .layer-item input {
-            cursor: pointer;
-        }
-
-        /* Status Bar នៅផ្នែកខាងក្រោម */
         .status-bar {
-            height: 28px;
-            background: #1e1e1e;
-            border-top: 1px solid #2d2d2d;
+            min-height: 26px;
+            background: #181818;
+            border-top: 1px solid #2a2a2a;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 12px;
-            font-size: 11px;
-            color: #9e9e9e;
+            padding: 2px 10px;
+            padding-bottom: calc(2px + env(safe-area-inset-bottom));
+            font-size: 10.5px;
+            color: #888;
             font-family: monospace;
             z-index: 100;
-        }
-        .status-bar span.highlight {
-            color: #4caf50;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- Toolbar -->
     <div class="toolbar">
         <div class="tool-group">
-            <a href="index.html" class="btn" style="text-decoration: none;">← ថយក្រោយ</a>
-            <button class="btn btn-open" onclick="document.getElementById('fileInput').click()">📂 បើកប្លង់ (DWG/DXF)</button>
+            <a href="index.html" class="btn" style="text-decoration: none;">← ថយ</a>
+            <button class="btn btn-open" onclick="document.getElementById('fileInput').click()">📂 បើកប្លង់ (DXF/DWG)</button>
             <input type="file" id="fileInput" accept=".dxf,.dwg" style="display: none;" onchange="handleFileSelect(event)">
         </div>
 
         <div class="tool-group">
-            <button class="btn active" id="btnPan" onclick="setMode('pan')">🖐️ Pan (អូស)</button>
-            <button class="btn" id="btnMeasure" onclick="setMode('measure')">📏 វាស់ប្រវែង (Dist)</button>
-            <button class="btn" onclick="zoomExtents()">⛶ Fit Screen</button>
-            <button class="btn" onclick="toggleLayers()">📑 Layers</button>
+            <button class="btn active" id="btnPan" onclick="setMode('pan')">🖐️ Pan</button>
+            <button class="btn" id="btnMeasure" onclick="setMode('measure')">📏 វាស់ប្រវែង</button>
+            <button class="btn" onclick="clearMeasure()">✕ លុបការវាស់</button>
             <button class="btn" onclick="toggleBackground()">🎨 ខ្មៅ/ស</button>
         </div>
     </div>
 
-    <!-- Viewport Area -->
     <div id="viewport">
         <canvas id="cadCanvas"></canvas>
 
-        <!-- Drop Box -->
-        <div class="empty-placeholder" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <div class="icon">📐</div>
-            <h3>បើកមើលប្លង់ AutoCAD</h3>
-            <p>ចុចទីនេះ ដើម្បីជ្រើសរើសហ្វាល <strong>.DXF</strong> ឬ <strong>.DWG</strong><br><span style="font-size: 10.5px; color: #777;">(គាំទ្រទាំងលើ Computer, iPad និងទូរស័ព្ទដៃ)</span></p>
+        <div class="measure-card" id="measureCard">
+            <span>📏 ប្រវែង: <span id="measureVal" style="color: #fff;">0.00 m</span></span>
         </div>
 
-        <!-- Layer List Panel -->
-        <div class="layer-panel" id="layerPanel">
-            <div class="layer-header">
-                <span>គ្រប់គ្រងស្រទាប់ (Layers)</span>
-                <span onclick="toggleLayers()" style="cursor: pointer; color: #ff5252;">✕</span>
-            </div>
-            <div class="layer-list" id="layerList"></div>
+        <div class="floating-controls">
+            <div class="circle-btn" onclick="zoomIn()">+</div>
+            <div class="circle-btn" onclick="zoomOut()">−</div>
+            <div class="circle-btn" onclick="zoomExtents()" style="font-size: 14px;">⛶</div>
+        </div>
+
+        <div class="empty-placeholder" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div style="font-size: 40px; margin-bottom: 10px;">📐</div>
+            <h3 style="color: #4caf50; font-size: 16px; margin-bottom: 5px;">បើកមើលប្លង់ AutoCAD</h3>
+            <p style="font-size: 11.5px; color: #ccc;">សូមជ្រើសរើសហ្វាល <strong>.DXF</strong> ដើម្បីមើលគ្រប់បន្ទាត់</p>
+            <p style="font-size: 10px; color: #888; margin-top: 6px;">(ក្នុង AutoCAD: File ➔ Save As ➔ AutoCAD DXF)</p>
         </div>
     </div>
 
-    <!-- Bottom Status Bar -->
     <div class="status-bar">
-        <span id="coordDisplay">X: 0.0000, Y: 0.0000</span>
-        <span id="measureDisplay" class="highlight">ប្រវែង: 0.00 m</span>
-        <span id="fileInfo">No File Loaded</span>
+        <span id="coordDisplay">X: 0.00, Y: 0.00</span>
+        <span id="fileInfo">គ្មានទិន្នន័យ</span>
     </div>
 
     <script>
@@ -234,136 +206,135 @@
         const ctx = canvas.getContext('2d');
         const viewport = document.getElementById('viewport');
         const coordDisplay = document.getElementById('coordDisplay');
-        const measureDisplay = document.getElementById('measureDisplay');
+        const measureCard = document.getElementById('measureCard');
+        const measureVal = document.getElementById('measureVal');
         const fileInfo = document.getElementById('fileInfo');
         const dropZone = document.getElementById('dropZone');
-        const layerPanel = document.getElementById('layerPanel');
-        const layerList = document.getElementById('layerList');
 
         let isDarkTheme = true;
-        let mode = 'pan'; // 'pan' ឬ 'measure'
+        let mode = 'pan'; 
         let scale = 1;
         let panX = 0, panY = 0;
         let isDragging = false;
         let startX, startY;
 
         let entities = [];
-        let layers = {};
+        let blocks = {};
         let measurePoints = [];
 
-        // កំណត់ទំហំ Canvas ពេញផ្ទៃ
         function resize() {
             canvas.width = viewport.clientWidth;
             canvas.height = viewport.clientHeight;
             draw();
         }
         window.addEventListener('resize', resize);
-        resize();
 
-        // មុខងារកំណត់ Mode
         function setMode(newMode) {
             mode = newMode;
             document.getElementById('btnPan').classList.toggle('active', mode === 'pan');
             document.getElementById('btnMeasure').classList.toggle('active', mode === 'measure');
-            if (mode !== 'measure') {
-                measurePoints = [];
-                measureDisplay.innerText = 'ប្រវែង: 0.00 m';
-                draw();
+            if (mode === 'measure') {
+                measureCard.style.display = 'flex';
             }
         }
 
-        // មុខងារប្តូរពណ៌ Background (ខ្មៅ Model Space / ស Layout Space)
+        function clearMeasure() {
+            measurePoints = [];
+            measureCard.style.display = 'none';
+            measureVal.innerText = '0.00 m';
+            draw();
+        }
+
         function toggleBackground() {
             isDarkTheme = !isDarkTheme;
             viewport.style.backgroundColor = isDarkTheme ? '#121212' : '#ffffff';
             draw();
         }
 
-        // បើក/បិទ ផ្ទាំង Layers
-        function toggleLayers() {
-            const isVisible = layerPanel.style.display === 'flex';
-            layerPanel.style.display = isVisible ? 'none' : 'flex';
-        }
-
-        // មុខងារគូរ Grid បែប AutoCAD
-        function drawGrid() {
-            const gridSize = 50;
-            ctx.strokeStyle = isDarkTheme ? '#1f1f1f' : '#f0f0f0';
-            ctx.lineWidth = 1 / scale;
-
-            const minX = -panX / scale;
-            const minY = -panY / scale;
-            const maxX = minX + canvas.width / scale;
-            const maxY = minY + canvas.height / scale;
-
-            const startX = Math.floor(minX / gridSize) * gridSize;
-            const startY = Math.floor(minY / gridSize) * gridSize;
-
-            for (let x = startX; x < maxX; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, minY);
-                ctx.lineTo(x, maxY);
-                ctx.stroke();
-            }
-            for (let y = startY; y < maxY; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(minX, y);
-                ctx.lineTo(maxX, y);
-                ctx.stroke();
-            }
-        }
-
-        // មុខងារគូរប្លង់សំខាន់ (Draw Loop)
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function drawScreenGrid() {
+            const gridSize = 40; 
             ctx.save();
-            ctx.translate(panX, panY);
-            ctx.scale(scale, -scale); // ត្រឡប់ Y ឱ្យត្រូវតាម Cartesian Coordinate របស់ AutoCAD
+            ctx.strokeStyle = isDarkTheme ? '#1c1c1c' : '#f0f0f0';
+            ctx.lineWidth = 1;
 
-            drawGrid();
+            const offsetX = panX % gridSize;
+            const offsetY = panY % gridSize;
 
-            // គូរបន្ទាត់ប្លង់ CAD
-            entities.forEach(ent => {
-                if (ent.layer && layers[ent.layer] && !layers[ent.layer].visible) return;
+            for (let x = offsetX; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = offsetY; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
 
-                ctx.strokeStyle = ent.color || (isDarkTheme ? '#00e5ff' : '#0077b6');
-                ctx.lineWidth = (ent.lineWidth || 1) / scale;
+        function drawEntity(ent, colorOverride) {
+            ctx.strokeStyle = colorOverride || (isDarkTheme ? '#00e5ff' : '#0077b6');
+            ctx.lineWidth = Math.max(1 / scale, 1.2);
 
-                if (ent.type === 'LINE') {
+            if (ent.type === 'LINE') {
+                ctx.beginPath();
+                ctx.moveTo(ent.vertices[0].x, ent.vertices[0].y);
+                ctx.lineTo(ent.vertices[1].x, ent.vertices[1].y);
+                ctx.stroke();
+            } else if (ent.type === 'LWPOLYLINE' || ent.type === 'POLYLINE') {
+                if (ent.vertices && ent.vertices.length > 1) {
                     ctx.beginPath();
                     ctx.moveTo(ent.vertices[0].x, ent.vertices[0].y);
-                    ctx.lineTo(ent.vertices[1].x, ent.vertices[1].y);
-                    ctx.stroke();
-                } else if (ent.type === 'LWPOLYLINE' || ent.type === 'POLYLINE') {
-                    if (ent.vertices.length > 1) {
-                        ctx.beginPath();
-                        ctx.moveTo(ent.vertices[0].x, ent.vertices[0].y);
-                        for (let i = 1; i < ent.vertices.length; i++) {
-                            ctx.lineTo(ent.vertices[i].x, ent.vertices[i].y);
-                        }
-                        if (ent.shape) ctx.closePath();
-                        ctx.stroke();
+                    for (let i = 1; i < ent.vertices.length; i++) {
+                        ctx.lineTo(ent.vertices[i].x, ent.vertices[i].y);
                     }
-                } else if (ent.type === 'CIRCLE') {
-                    ctx.beginPath();
-                    ctx.arc(ent.center.x, ent.center.y, ent.radius, 0, Math.PI * 2);
-                    ctx.stroke();
-                } else if (ent.type === 'ARC') {
-                    ctx.beginPath();
-                    ctx.arc(ent.center.x, ent.center.y, ent.radius, ent.startAngle, ent.endAngle);
+                    if (ent.shape) ctx.closePath();
                     ctx.stroke();
                 }
-            });
+            } else if (ent.type === 'CIRCLE') {
+                ctx.beginPath();
+                ctx.arc(ent.center.x, ent.center.y, ent.radius, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (ent.type === 'ARC') {
+                ctx.beginPath();
+                ctx.arc(ent.center.x, ent.center.y, ent.radius, ent.startAngle, ent.endAngle);
+                ctx.stroke();
+            } else if (ent.type === 'INSERT' && blocks[ent.name]) {
+                // គូរ Block របស់ AutoCAD
+                ctx.save();
+                ctx.translate(ent.position.x, ent.position.y);
+                if (ent.rotation) ctx.rotate((ent.rotation * Math.PI) / 180);
+                if (ent.scale) ctx.scale(ent.scale.x || 1, ent.scale.y || 1);
 
-            // គូរចំណុចវាស់ប្រវែង (Measure Tool)
+                const blk = blocks[ent.name];
+                if (blk.entities) {
+                    blk.entities.forEach(subEnt => drawEntity(subEnt, '#ffb300'));
+                }
+                ctx.restore();
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawScreenGrid();
+
+            ctx.save();
+            ctx.translate(panX, panY);
+            ctx.scale(scale, -scale);
+
+            entities.forEach(ent => drawEntity(ent));
+
             if (measurePoints.length > 0) {
                 ctx.strokeStyle = '#ff1744';
                 ctx.fillStyle = '#ff1744';
-                ctx.lineWidth = 2 / scale;
+                ctx.lineWidth = Math.max(2 / scale, 2);
 
                 measurePoints.forEach(p => {
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, 4 / scale, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, Math.max(5 / scale, 5), 0, Math.PI * 2);
                     ctx.fill();
                 });
 
@@ -376,52 +347,174 @@
             }
 
             ctx.restore();
+
+            if (measurePoints.length === 2) {
+                drawDimensionText(measurePoints[0], measurePoints[1]);
+            }
         }
 
-        // មុខងារ Zoom Extents (Fit to screen)
+        function drawDimensionText(p1, p2) {
+            const s1x = p1.x * scale + panX;
+            const s1y = panY - p1.y * scale;
+            const s2x = p2.x * scale + panX;
+            const s2y = panY - p2.y * scale;
+
+            const midX = (s1x + s2x) / 2;
+            const midY = (s1y + s2y) / 2;
+
+            const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            const distText = (dist >= 1000) ? (dist / 1000).toFixed(2) + ' m' : dist.toFixed(0) + ' mm';
+
+            ctx.save();
+            ctx.font = 'bold 12px sans-serif';
+            const textWidth = ctx.measureText(distText).width;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.strokeStyle = '#ff1744';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(midX - textWidth / 2 - 8, midY - 14, textWidth + 16, 22, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(distText, midX, midY - 3);
+            ctx.restore();
+        }
+
+        function zoomIn() { zoomAtCenter(1.3); }
+        function zoomOut() { zoomAtCenter(0.7); }
+
+        function zoomAtCenter(factor) {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const prevScale = scale;
+            scale *= factor;
+            scale = Math.min(Math.max(0.00001, scale), 5000);
+
+            panX = cx - (cx - panX) * (scale / prevScale);
+            panY = cy - (cy - panY) * (scale / prevScale);
+            draw();
+        }
+
+        // មុខងារទាញប្លង់ឱ្យរត់មកចំកណ្តាលអេក្រង់ស្វ័យប្រវត្តិ
         function zoomExtents() {
-            if (entities.length === 0) {
-                scale = 1;
-                panX = canvas.width / 2;
-                panY = canvas.height / 2;
-                draw();
-                return;
-            }
+            if (entities.length === 0) return;
 
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
+            function checkPoint(x, y) {
+                if (!isNaN(x) && !isNaN(y)) {
+                    minX = Math.min(minX, x);
+                    minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x);
+                    maxY = Math.max(maxY, y);
+                }
+            }
+
             entities.forEach(ent => {
                 if (ent.vertices) {
-                    ent.vertices.forEach(v => {
-                        minX = Math.min(minX, v.x);
-                        minY = Math.min(minY, v.y);
-                        maxX = Math.max(maxX, v.x);
-                        maxY = Math.max(maxY, v.y);
-                    });
+                    ent.vertices.forEach(v => checkPoint(v.x, v.y));
                 } else if (ent.center && ent.radius) {
-                    minX = Math.min(minX, ent.center.x - ent.radius);
-                    minY = Math.min(minY, ent.center.y - ent.radius);
-                    maxX = Math.max(maxX, ent.center.x + ent.radius);
-                    maxY = Math.max(maxY, ent.center.y + ent.radius);
+                    checkPoint(ent.center.x - ent.radius, ent.center.y - ent.radius);
+                    checkPoint(ent.center.x + ent.radius, ent.center.y + ent.radius);
+                } else if (ent.position) {
+                    checkPoint(ent.position.x, ent.position.y);
                 }
             });
 
-            const width = maxX - minX || 500;
-            const height = maxY - minY || 500;
+            if (minX === Infinity || maxX === -Infinity) return;
+
+            const width = maxX - minX || 1000;
+            const height = maxY - minY || 1000;
+
             const scaleX = (canvas.width * 0.85) / width;
             const scaleY = (canvas.height * 0.85) / height;
 
             scale = Math.min(scaleX, scaleY);
             panX = (canvas.width - width * scale) / 2 - minX * scale;
             panY = canvas.height - ((canvas.height - height * scale) / 2 - minY * scale);
+
             draw();
         }
 
-        // ការគ្រប់គ្រង Mouse Events (Pan, Zoom, Measure)
-        viewport.addEventListener('mousedown', (e) => {
+        // មុខងារអានហ្វាល
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            fileInfo.innerText = file.name;
+
+            if (fileName.endsWith('.dwg')) {
+                alert("⚠️ ហ្វាល .DWG ត្រូវបានការពារដោយ Binary Code របស់ Autodesk មិនអាចអានផ្ទាល់បានទេ!\n\n👉 វិធីបើកមើល៖ សូមបើកហ្វាលនេះក្នុង AutoCAD រួចចុច Save As ➔ ជ្រើសរើសប្រភេទ '.DXF' ទើបអាចបើកមើលគ្រប់បន្ទាត់បានភ្លាមៗ។");
+                return;
+            }
+
+            if (fileName.endsWith('.dxf')) {
+                dropZone.style.display = 'none';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const parser = new DxfParser();
+                        const dxf = parser.parseSync(e.target.result);
+                        entities = dxf.entities || [];
+                        blocks = dxf.blocks || {};
+                        zoomExtents();
+                    } catch (err) {
+                        alert("មិនអាចអានហ្វាល DXF នេះបានទេ! សូមប្រាកដថាបាន Save As ជា AutoCAD 2013 ឬ 2018 DXF។");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Mouse & Touch Controls
+        viewport.addEventListener('mousedown', (e) => handlePointerDown(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        let initialDist = null;
+        let initialTouchScale = 1;
+
+        viewport.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                handlePointerDown(e.touches[0].clientX, e.touches[0].clientY);
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                initialDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                initialTouchScale = scale;
+            }
+        });
+
+        viewport.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches.length === 1 && isDragging) {
+                handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+            } else if (e.touches.length === 2 && initialDist) {
+                const currentDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                scale = initialTouchScale * (currentDist / initialDist);
+                draw();
+            }
+        }, { passive: false });
+
+        viewport.addEventListener('touchend', () => {
+            isDragging = false;
+            initialDist = null;
+        });
+
+        function handlePointerDown(clientX, clientY) {
             const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
+            const mouseX = clientX - rect.left;
+            const mouseY = clientY - rect.top;
 
             const worldX = (mouseX - panX) / scale;
             const worldY = (panY - mouseY) / scale;
@@ -432,37 +525,34 @@
 
                 if (measurePoints.length === 2) {
                     const dist = Math.hypot(measurePoints[1].x - measurePoints[0].x, measurePoints[1].y - measurePoints[0].y);
-                    // សន្មតជា mm ឬ m ទៅតាម Scale
-                    const formattedDist = (dist > 1000) ? (dist / 1000).toFixed(2) + ' m' : dist.toFixed(2) + ' mm';
-                    measureDisplay.innerText = `ប្រវែង: ${formattedDist}`;
+                    const formatted = (dist >= 1000) ? (dist / 1000).toFixed(2) + ' m' : dist.toFixed(0) + ' mm';
+                    measureVal.innerText = formatted;
+                    measureCard.style.display = 'flex';
                 }
                 draw();
             } else {
                 isDragging = true;
-                startX = e.clientX - panX;
-                startY = e.clientY - panY;
+                startX = clientX - panX;
+                startY = clientY - panY;
             }
-        });
+        }
 
-        window.addEventListener('mousemove', (e) => {
+        function handlePointerMove(clientX, clientY) {
             const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
+            const mouseX = clientX - rect.left;
+            const mouseY = clientY - rect.top;
 
-            const worldX = ((mouseX - panX) / scale).toFixed(3);
-            const worldY = ((panY - mouseY) / scale).toFixed(3);
+            const worldX = ((mouseX - panX) / scale).toFixed(1);
+            const worldY = ((panY - mouseY) / scale).toFixed(1);
             coordDisplay.innerText = `X: ${worldX}, Y: ${worldY}`;
 
             if (isDragging && mode === 'pan') {
-                panX = e.clientX - startX;
-                panY = e.clientY - startY;
+                panX = clientX - startX;
+                panY = clientY - startY;
                 draw();
             }
-        });
+        }
 
-        window.addEventListener('mouseup', () => isDragging = false);
-
-        // Zoom តាមរយៈ Mouse Scroll Wheel
         viewport.addEventListener('wheel', (e) => {
             e.preventDefault();
             const zoomFactor = 1.15;
@@ -471,171 +561,16 @@
             const mouseY = e.clientY - rect.top;
 
             const prevScale = scale;
-            if (e.deltaY < 0) {
-                scale *= zoomFactor;
-            } else {
-                scale /= zoomFactor;
-            }
-            scale = Math.min(Math.max(0.001, scale), 1000);
+            if (e.deltaY < 0) scale *= zoomFactor;
+            else scale /= zoomFactor;
+            scale = Math.min(Math.max(0.00001, scale), 5000);
 
             panX = mouseX - (mouseX - panX) * (scale / prevScale);
             panY = mouseY - (mouseY - panY) * (scale / prevScale);
             draw();
         }, { passive: false });
 
-        // ការគាំទ្រ Touch Events លើ iPhone / iPad (Pinch Zoom & Pan)
-        let initialPinchDist = null;
-        let initialScale = 1;
-
-        viewport.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                const t = e.touches[0];
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = t.clientX - rect.left;
-                const mouseY = t.clientY - rect.top;
-
-                if (mode === 'measure') {
-                    const worldX = (mouseX - panX) / scale;
-                    const worldY = (panY - mouseY) / scale;
-                    if (measurePoints.length >= 2) measurePoints = [];
-                    measurePoints.push({ x: worldX, y: worldY });
-                    if (measurePoints.length === 2) {
-                        const dist = Math.hypot(measurePoints[1].x - measurePoints[0].x, measurePoints[1].y - measurePoints[0].y);
-                        measureDisplay.innerText = `ប្រវែង: ${(dist / 1000).toFixed(2)} m`;
-                    }
-                    draw();
-                } else {
-                    isDragging = true;
-                    startX = t.clientX - panX;
-                    startY = t.clientY - panY;
-                }
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                initialPinchDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                initialScale = scale;
-            }
-        });
-
-        viewport.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (e.touches.length === 1 && isDragging && mode === 'pan') {
-                panX = e.touches[0].clientX - startX;
-                panY = e.touches[0].clientY - startY;
-                draw();
-            } else if (e.touches.length === 2 && initialPinchDist) {
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                scale = initialScale * (currentDist / initialPinchDist);
-                draw();
-            }
-        }, { passive: false });
-
-        viewport.addEventListener('touchend', () => {
-            isDragging = false;
-            initialPinchDist = null;
-        });
-
-        // មុខងារបើក និង Parse ហ្វាល DXF / DWG
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            fileInfo.innerText = file.name;
-            dropZone.style.display = 'none';
-
-            const reader = new FileReader();
-
-            if (file.name.toLowerCase().endsWith('.dxf')) {
-                reader.onload = function(e) {
-                    try {
-                        const parser = new DxfParser();
-                        const dxf = parser.parseSync(e.target.result);
-                        loadDxfData(dxf);
-                    } catch (err) {
-                        alert("មិនអាចអានហ្វាល DXF នេះបានទេ! សូមពិនិត្យមើលទ្រង់ទ្រាយហ្វាលឡើងវិញ។");
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                // ប្រសិនបើជាហ្វាល .DWG
-                alert(`បានជ្រើសរើសហ្វាល DWG: ${file.name}\nប្រព័ន្ធកំពុងដំណើរការទាញយក Entities ប្លង់...`);
-                loadSampleBlueprint();
-            }
-        }
-
-        function loadDxfData(dxf) {
-            entities = dxf.entities || [];
-            layers = {};
-
-            if (dxf.tables && dxf.tables.layer && dxf.tables.layer.layers) {
-                Object.keys(dxf.tables.layer.layers).forEach(k => {
-                    layers[k] = { visible: true };
-                });
-            }
-
-            renderLayerList();
-            zoomExtents();
-        }
-
-        // ប្លង់គំរូស្វ័យប្រវត្តិកម្រិតស្ថាបត្យកម្ម
-        function loadSampleBlueprint() {
-            entities = [
-                // ជញ្ជាំងអគារក្រៅ
-                { type: 'LINE', layer: 'WALL', vertices: [{x: 0, y: 0}, {x: 10000, y: 0}], color: '#4caf50' },
-                { type: 'LINE', layer: 'WALL', vertices: [{x: 10000, y: 0}, {x: 10000, y: 8000}], color: '#4caf50' },
-                { type: 'LINE', layer: 'WALL', vertices: [{x: 10000, y: 8000}, {x: 0, y: 8000}], color: '#4caf50' },
-                { type: 'LINE', layer: 'WALL', vertices: [{x: 0, y: 8000}, {x: 0, y: 0}], color: '#4caf50' },
-                // បន្ទប់ខាងក្នុង
-                { type: 'LINE', layer: 'PARTITION', vertices: [{x: 5000, y: 0}, {x: 5000, y: 8000}], color: '#ffb300' },
-                { type: 'LINE', layer: 'PARTITION', vertices: [{x: 0, y: 4000}, {x: 5000, y: 4000}], color: '#ffb300' },
-                // សសរ (Columns)
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 0, y: 0}, radius: 250, color: '#f44336' },
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 5000, y: 0}, radius: 250, color: '#f44336' },
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 10000, y: 0}, radius: 250, color: '#f44336' },
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 0, y: 8000}, radius: 250, color: '#f44336' },
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 5000, y: 8000}, radius: 250, color: '#f44336' },
-                { type: 'CIRCLE', layer: 'COLUMN', center: {x: 10000, y: 8000}, radius: 250, color: '#f44336' },
-                // ទ្វារ (Doors)
-                { type: 'ARC', layer: 'DOOR', center: {x: 5000, y: 2000}, radius: 900, startAngle: 0, endAngle: Math.PI / 2, color: '#00e5ff' }
-            ];
-
-            layers = {
-                'WALL': { visible: true },
-                'PARTITION': { visible: true },
-                'COLUMN': { visible: true },
-                'DOOR': { visible: true }
-            };
-
-            renderLayerList();
-            zoomExtents();
-        }
-
-        // បង្ហាញបញ្ជី Layers ក្នុង Panel
-        function renderLayerList() {
-            layerList.innerHTML = '';
-            Object.keys(layers).forEach(layerName => {
-                const item = document.createElement('div');
-                item.className = 'layer-item';
-                item.innerHTML = `
-                    <span>${layerName}</span>
-                    <input type="checkbox" ${layers[layerName].visible ? 'checked' : ''} onchange="toggleLayerVisibility('${layerName}', this.checked)">
-                `;
-                layerList.appendChild(item);
-            });
-        }
-
-        function toggleLayerVisibility(layerName, isVisible) {
-            if (layers[layerName]) {
-                layers[layerName].visible = isVisible;
-                draw();
-            }
-        }
+        resize();
     </script>
 </body>
 </html>
