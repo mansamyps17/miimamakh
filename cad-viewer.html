@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Universal CAD & BIM Viewer (AutoCAD, Revit, Robot)</title>
+    <title>Universal CAD & BIM Viewer</title>
     <!-- Autodesk Viewer SDK Styles & Engine -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
@@ -68,7 +68,7 @@
             width: 100%;
             height: calc(100% - 52px);
             position: relative;
-            background: #ffffff;
+            background: #1e1e1e;
         }
     </style>
 </head>
@@ -80,8 +80,9 @@
             <span id="status-pill">● រួចរាល់</span>
         </div>
         <div class="right-controls">
-            <input type="file" id="cadFileInput" accept=".dwg,.dxf,.rvt,.rtd,.ifc,.nwd" style="display: none;">
-            <button id="uploadBtn" class="btn-upload" onclick="document.getElementById('cadFileInput').click()">📂 បើកប្លង់</button>
+            <!-- មិនដាក់ accept តឹងតែង ដើម្បីឱ្យ iPhone អនុញ្ញាតឱ្យរើសហ្វាល .rvt/.rtd បាន -->
+            <input type="file" id="cadFileInput" style="display: none;">
+            <button id="uploadBtn" class="btn-upload" onclick="document.getElementById('cadFileInput').click()">📂 បើកប្លង់ (CAD/BIM)</button>
         </div>
     </div>
 
@@ -115,7 +116,7 @@
             }
         }
 
-        // ២. ចាប់ផ្ដើម Viewer Engine
+        // ២. ចាប់ផ្ដើម Viewer Engine ជាមួយ Document Browser Extension
         const initOptions = {
             env: 'AutodeskProduction2',
             api: 'streamingV2',
@@ -124,7 +125,11 @@
 
         Autodesk.Viewing.Initializer(initOptions, () => {
             const container = document.getElementById('viewerContainer');
-            viewer = new Autodesk.Viewing.GuiViewer3D(container);
+            // បន្ថែម DocumentBrowser ដើម្បីឱ្យមានផ្ទាំងរើស View 2D/3D/Model Space
+            const config = {
+                extensions: ['Autodesk.DocumentBrowser']
+            };
+            viewer = new Autodesk.Viewing.GuiViewer3D(container, config);
             viewer.start();
             setStatus('ម៉ាស៊ីនរួចរាល់', '#4caf50');
         });
@@ -133,6 +138,15 @@
         document.getElementById('cadFileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
+
+            // ត្រួតពិនិត្យប្រភេទហ្វាលតាមរយៈកូដ JavaScript
+            const validExts = ['.dwg', '.dxf', '.rvt', '.rtd', '.ifc', '.nwd'];
+            const fileName = file.name.toLowerCase();
+            const isValid = validExts.some(ext => fileName.endsWith(ext));
+            if (!isValid) {
+                alert('សូមជ្រើសរើសប្រភេទហ្វាល CAD/BIM (.dwg, .rvt, .rtd, .dxf, .ifc)');
+                return;
+            }
 
             uploadBtn.disabled = true;
             setStatus(`Upload: ${file.name}...`);
@@ -172,7 +186,7 @@
                 const completeData = await completeRes.json();
                 const urn = btoa(completeData.objectId).replace(/=/g, '');
 
-                setStatus('កំពុងបម្លែង...');
+                setStatus('កំពុងបម្លែង (Translating)...');
                 await fetch('https://developer.api.autodesk.com/modelderivative/v2/designdata/job', {
                     method: 'POST',
                     headers: {
@@ -221,16 +235,24 @@
             }, 3000);
         }
 
-        // ៥. Load ប្លង់ និងកែតម្រូវ Lineweight & Selection លើទូរសព្ទ
+        // ៥. Load ប្លង់ (ផ្តល់អាទិភាពដល់ 3D ឬ Model Space មុន Layout សខ្មៅ)
         function loadModel(urn) {
             const documentId = 'urn:' + urn;
             Autodesk.Viewing.Document.load(documentId, (doc) => {
-                const defaultModel = doc.getRoot().getDefaultGeometry();
+                const root = doc.getRoot();
                 
-                viewer.loadDocumentNode(doc, defaultModel).then(() => {
+                // ស្វែងរកទិដ្ឋភាព 3D ជាមុន (ប្រសិនបើជាហ្វាល Revit/Robot)
+                let viewable = root.getDefaultGeometry();
+                const viewables3D = root.search({ type: 'geometry', role: '3d' });
+                
+                if (viewables3D && viewables3D.length > 0) {
+                    viewable = viewables3D[0];
+                }
+
+                viewer.loadDocumentNode(doc, viewable).then(() => {
                     setStatus('ប្លង់រួចរាល់', '#4caf50');
 
-                    // បិទកម្រាស់បន្ទាត់ (Lineweight) ដើម្បីកុំឱ្យរីកខ្មៅជាប់គ្នា
+                    // បិទកម្រាស់បន្ទាត់ (Lineweight)
                     if (viewer.impl && viewer.impl.setDisplayLineWidth) {
                         viewer.impl.setDisplayLineWidth(false);
                     }
@@ -238,11 +260,10 @@
                         viewer.prefs.set('lineWeight', false);
                     }
 
-                    // បិទស្រមោលក្រៅ (Ghosting) និងកំណត់ឱ្យរើសត្រឹមផ្នែកតូចៗ
                     viewer.setGhosting(false);
                     viewer.setSelectionMode(Autodesk.Viewing.SelectionMode.LEAF_NODES);
 
-                    // ដោះការជ្រើសរើសស្វ័យប្រវត្តិកុំឱ្យជាប់ផ្ទាំងខៀវធំពេល Pan ឬ Zoom លើទូរសព្ទ
+                    // ដោះការជ្រើសរើសកុំឱ្យជាប់ដុំខៀវធំពេល Pan/Zoom
                     viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, () => {
                         viewer.clearSelection();
                     });
