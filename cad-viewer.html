@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autodesk Official CAD Viewer</title>
+    <title>Universal CAD & BIM Viewer (AutoCAD, Revit, Robot)</title>
     <!-- Autodesk Viewer SDK Styles & Engine -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
@@ -46,6 +46,7 @@
             gap: 6px;
         }
         
+        .right-controls { display: flex; align-items: center; gap: 10px; }
         .btn-upload {
             background: #0e639c;
             color: #fff;
@@ -73,11 +74,12 @@
     <div class="toolbar">
         <div class="left-controls">
             <a href="index.html" class="btn-back">← ត្រឡប់ក្រោយ</a>
-            <span id="status-pill">● រង់ចាំការ Upload ប្លង់ DWG</span>
+            <span id="status-pill">● ប្រព័ន្ធរួចរាល់សម្រាប់ការផ្ទុកប្លង់</span>
         </div>
-        <div>
-            <input type="file" id="dwgFileInput" accept=".dwg,.dxf" style="display: none;">
-            <button id="uploadBtn" class="btn-upload" onclick="document.getElementById('dwgFileInput').click()">📂 បើកហ្វាល DWG</button>
+        <div class="right-controls">
+            <!-- គាំទ្រ DWG, DXF, RVT (Revit), RTD (Robot), IFC, NWD -->
+            <input type="file" id="cadFileInput" accept=".dwg,.dxf,.rvt,.rtd,.ifc,.nwd" style="display: none;">
+            <button id="uploadBtn" class="btn-upload" onclick="document.getElementById('cadFileInput').click()">📂 បើកប្លង់ (CAD / Revit / Robot)</button>
         </div>
     </div>
 
@@ -111,7 +113,7 @@
             }
         }
 
-        // ២. ចាប់ផ្ដើម Autodesk Viewer Canvas
+        // ២. ចាប់ផ្ដើម Autodesk Viewer Canvas & Tools
         const initOptions = {
             env: 'AutodeskProduction2',
             api: 'streamingV2',
@@ -122,11 +124,11 @@
             const container = document.getElementById('viewerContainer');
             viewer = new Autodesk.Viewing.GuiViewer3D(container);
             viewer.start();
-            setStatus('ប្រព័ន្ធ Autodesk រួចរាល់សម្រាប់ការប្រើប្រាស់', '#4caf50');
+            setStatus('Autodesk Engine រួចរាល់ (ជ្រើសរើសហ្វាលដើម្បីបើក)', '#4caf50');
         });
 
-        // ៣. ដំណើរការ Upload និង Translate ប្លង់ DWG
-        document.getElementById('dwgFileInput').addEventListener('change', async (e) => {
+        // ៣. ដំណើរការ Upload និងបម្លែងប្លង់ស្វ័យប្រវត្តិ
+        document.getElementById('cadFileInput').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -136,7 +138,7 @@
             try {
                 if (!globalToken) await fetchAccessToken();
 
-                // ក. បង្កើត Bucket (បើមិនទាន់មាន)
+                // ក. បង្កើត Bucket លើ Autodesk OSS
                 await fetch('https://developer.api.autodesk.com/oss/v2/buckets', {
                     method: 'POST',
                     headers: {
@@ -146,15 +148,15 @@
                     body: JSON.stringify({ bucketKey: BUCKET_KEY, policyKey: 'transient' })
                 });
 
-                // ខ. ស្នើសុំ Signed S3 Upload URL (ស្តង់ដារផ្លូវការ Direct-to-S3)
-                setStatus('កំពុង Upload ទៅកាន់ Autodesk Cloud...');
+                // ខ. ស្នើសុំ Signed S3 Upload URL
+                setStatus(`កំពុង Upload ហ្វាល (${(file.size / (1024 * 1024)).toFixed(1)} MB)...`);
                 const safeName = encodeURIComponent(file.name);
                 const s3InitRes = await fetch(`https://developer.api.autodesk.com/oss/v2/buckets/${BUCKET_KEY}/objects/${safeName}/signeds3upload`, {
                     headers: { 'Authorization': `Bearer ${globalToken}` }
                 });
                 const s3InitData = await s3InitRes.json();
 
-                // គ. បញ្ជូនទិន្នន័យហ្វាលទៅកាន់ Cloud S3
+                // គ. Upload ផ្ទាល់ទៅកាន់ S3 Storage
                 await fetch(s3InitData.urls[0], {
                     method: 'PUT',
                     body: file
@@ -171,11 +173,11 @@
                 });
                 const completeData = await completeRes.json();
 
-                // ង. បម្លែង Base64 URN
+                // ង. បម្លែង ObjectID ទៅជា Base64 URN
                 const urn = btoa(completeData.objectId).replace(/=/g, '');
 
-                // ច. បញ្ជាឱ្យ Autodesk Translate ទៅជាទម្រង់ SVF2
-                setStatus('កំពុងបម្លែងទម្រង់ប្លង់ (Translating)...');
+                // ច. បញ្ជាឱ្យ Autodesk Model Derivative បម្លែងទម្រង់ (Translate Job)
+                setStatus('កំពុងបម្លែងទម្រង់ 2D/3D (Translating)...');
                 await fetch('https://developer.api.autodesk.com/modelderivative/v2/designdata/job', {
                     method: 'POST',
                     headers: {
@@ -188,7 +190,7 @@
                     })
                 });
 
-                // ឆ. តាមដានដំណើរការបម្លែងរហូតដល់ចប់
+                // ឆ. តាមដានដំណើរការបម្លែង
                 pollManifestStatus(urn);
 
             } catch (err) {
@@ -197,7 +199,7 @@
             }
         });
 
-        // ៤. មុខងារត្រួតពិនិត្យដំណើរការ Translate
+        // ៤. តាមដាន Progress រហូតដល់ 100%
         function pollManifestStatus(urn) {
             const timer = setInterval(async () => {
                 try {
@@ -215,17 +217,17 @@
                         uploadBtn.disabled = false;
                     } else if (data.status === 'failed') {
                         clearInterval(timer);
-                        setStatus('ការបម្លែងប្លង់បរាជ័យ (File format error)', '#ff5252');
+                        setStatus('ការបម្លែងប្លង់បរាជ័យ (Format មិនត្រឹមត្រូវ)', '#ff5252');
                         uploadBtn.disabled = false;
                     }
                 } catch (e) {
                     clearInterval(timer);
                     uploadBtn.disabled = false;
                 }
-            }, 2500);
+            }, 3000);
         }
 
-        // ៥. Load ប្លង់បង្ហាញលើអេក្រង់
+        // ៥. បង្ហាញ Model និងឧបករណ៍លើផ្ទាំង Viewer
         function loadModel(urn) {
             const documentId = 'urn:' + urn;
             Autodesk.Viewing.Document.load(documentId, (doc) => {
@@ -233,7 +235,7 @@
                 viewer.loadDocumentNode(doc, defaultModel);
                 setStatus('បានផ្ទុកប្លង់រួចរាល់ ១០០%', '#4caf50');
             }, (errorCode) => {
-                setStatus('មិនអាចបើកប្លង់បានទេ Error: ' + errorCode, '#ff5252');
+                setStatus('មិនអាចបើកប្លង់បានទេ Code: ' + errorCode, '#ff5252');
             });
         }
     </script>
