@@ -2,575 +2,81 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AutoCAD Viewer (DWG & DXF)</title>
-    <!-- Library Parse DXF -->
-    <script src="https://cdn.jsdelivr.net/npm/dxf-parser@1.1.2/dist/dxf-parser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autodesk Official CAD Viewer</title>
+    <!-- Autodesk Viewer SDK Styles & Scripts -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
+    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        body {
-            font-family: 'Battambang', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         .toolbar {
-            min-height: 50px;
-            background: #1f1f1f;
-            border-bottom: 1px solid #333333;
+            height: 48px;
+            background: #252526;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 4px 8px;
-            z-index: 100;
-            gap: 6px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .tool-group {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn {
-            background: #2d2d2d;
-            color: #eee;
-            border: 1px solid #444;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Battambang', sans-serif;
-            font-size: 11px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-        .btn.active {
-            background: #2e7d32;
-            border-color: #4caf50;
-            color: #fff;
-            font-weight: bold;
-        }
-        .btn-open {
-            background: #1565c0;
-            border-color: #1976d2;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        #viewport {
-            flex: 1;
-            position: relative;
-            background-color: #121212;
-            cursor: crosshair;
-            touch-action: none;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        .floating-controls {
-            position: absolute;
-            right: 12px;
-            bottom: 45px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 50;
-        }
-        .circle-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(45, 45, 45, 0.9);
-            border: 1px solid #555;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .measure-card {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(20, 20, 20, 0.92);
-            border: 1px solid #4caf50;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            color: #4caf50;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            z-index: 60;
-        }
-
-        .empty-placeholder {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            border: 2px dashed #444;
-            border-radius: 12px;
-            padding: 30px 20px;
-            background: rgba(25, 25, 25, 0.95);
-            cursor: pointer;
-            max-width: 90%;
+            padding: 0 16px;
+            border-bottom: 1px solid #3c3c3c;
             z-index: 10;
+            position: relative;
         }
-
-        .status-bar {
-            min-height: 26px;
-            background: #181818;
-            border-top: 1px solid #2a2a2a;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 2px 10px;
-            padding-bottom: calc(2px + env(safe-area-inset-bottom));
-            font-size: 10.5px;
-            color: #888;
-            font-family: monospace;
-            z-index: 100;
+        .btn-back {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            background: #3a3d41;
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
+        .btn-back:hover { background: #505357; }
+        .title { color: #00bcd4; font-size: 14px; font-weight: 600; }
+        #viewerContainer { width: 100%; height: calc(100% - 48px); position: relative; }
     </style>
 </head>
 <body>
-
     <div class="toolbar">
-        <div class="tool-group">
-            <a href="index.html" class="btn" style="text-decoration: none;">← ថយ</a>
-            <button class="btn btn-open" onclick="document.getElementById('fileInput').click()">📂 បើកប្លង់ (DXF/DWG)</button>
-            <input type="file" id="fileInput" accept=".dxf,.dwg" style="display: none;" onchange="handleFileSelect(event)">
-        </div>
-
-        <div class="tool-group">
-            <button class="btn active" id="btnPan" onclick="setMode('pan')">🖐️ Pan</button>
-            <button class="btn" id="btnMeasure" onclick="setMode('measure')">📏 វាស់ប្រវែង</button>
-            <button class="btn" onclick="clearMeasure()">✕ លុបការវាស់</button>
-            <button class="btn" onclick="toggleBackground()">🎨 ខ្មៅ/ស</button>
-        </div>
+        <a href="index.html" class="btn-back">← ត្រឡប់ក្រោយ</a>
+        <span class="title">Autodesk APS Engine (24/7 Active)</span>
     </div>
 
-    <div id="viewport">
-        <canvas id="cadCanvas"></canvas>
-
-        <div class="measure-card" id="measureCard">
-            <span>📏 ប្រវែង: <span id="measureVal" style="color: #fff;">0.00 m</span></span>
-        </div>
-
-        <div class="floating-controls">
-            <div class="circle-btn" onclick="zoomIn()">+</div>
-            <div class="circle-btn" onclick="zoomOut()">−</div>
-            <div class="circle-btn" onclick="zoomExtents()" style="font-size: 14px;">⛶</div>
-        </div>
-
-        <div class="empty-placeholder" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <div style="font-size: 40px; margin-bottom: 10px;">📐</div>
-            <h3 style="color: #4caf50; font-size: 16px; margin-bottom: 5px;">បើកមើលប្លង់ AutoCAD</h3>
-            <p style="font-size: 11.5px; color: #ccc;">សូមជ្រើសរើសហ្វាល <strong>.DXF</strong> ដើម្បីមើលគ្រប់បន្ទាត់</p>
-            <p style="font-size: 10px; color: #888; margin-top: 6px;">(ក្នុង AutoCAD: File ➔ Save As ➔ AutoCAD DXF)</p>
-        </div>
-    </div>
-
-    <div class="status-bar">
-        <span id="coordDisplay">X: 0.00, Y: 0.00</span>
-        <span id="fileInfo">គ្មានទិន្នន័យ</span>
-    </div>
+    <div id="viewerContainer"></div>
 
     <script>
-        const canvas = document.getElementById('cadCanvas');
-        const ctx = canvas.getContext('2d');
-        const viewport = document.getElementById('viewport');
-        const coordDisplay = document.getElementById('coordDisplay');
-        const measureCard = document.getElementById('measureCard');
-        const measureVal = document.getElementById('measureVal');
-        const fileInfo = document.getElementById('fileInfo');
-        const dropZone = document.getElementById('dropZone');
+        let viewer;
 
-        let isDarkTheme = true;
-        let mode = 'pan'; 
-        let scale = 1;
-        let panX = 0, panY = 0;
-        let isDragging = false;
-        let startX, startY;
-
-        let entities = [];
-        let blocks = {};
-        let measurePoints = [];
-
-        function resize() {
-            canvas.width = viewport.clientWidth;
-            canvas.height = viewport.clientHeight;
-            draw();
-        }
-        window.addEventListener('resize', resize);
-
-        function setMode(newMode) {
-            mode = newMode;
-            document.getElementById('btnPan').classList.toggle('active', mode === 'pan');
-            document.getElementById('btnMeasure').classList.toggle('active', mode === 'measure');
-            if (mode === 'measure') {
-                measureCard.style.display = 'flex';
-            }
-        }
-
-        function clearMeasure() {
-            measurePoints = [];
-            measureCard.style.display = 'none';
-            measureVal.innerText = '0.00 m';
-            draw();
-        }
-
-        function toggleBackground() {
-            isDarkTheme = !isDarkTheme;
-            viewport.style.backgroundColor = isDarkTheme ? '#121212' : '#ffffff';
-            draw();
-        }
-
-        function drawScreenGrid() {
-            const gridSize = 40; 
-            ctx.save();
-            ctx.strokeStyle = isDarkTheme ? '#1c1c1c' : '#f0f0f0';
-            ctx.lineWidth = 1;
-
-            const offsetX = panX % gridSize;
-            const offsetY = panY % gridSize;
-
-            for (let x = offsetX; x < canvas.width; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-            for (let y = offsetY; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
-
-        function drawEntity(ent, colorOverride) {
-            ctx.strokeStyle = colorOverride || (isDarkTheme ? '#00e5ff' : '#0077b6');
-            ctx.lineWidth = Math.max(1 / scale, 1.2);
-
-            if (ent.type === 'LINE') {
-                ctx.beginPath();
-                ctx.moveTo(ent.vertices[0].x, ent.vertices[0].y);
-                ctx.lineTo(ent.vertices[1].x, ent.vertices[1].y);
-                ctx.stroke();
-            } else if (ent.type === 'LWPOLYLINE' || ent.type === 'POLYLINE') {
-                if (ent.vertices && ent.vertices.length > 1) {
-                    ctx.beginPath();
-                    ctx.moveTo(ent.vertices[0].x, ent.vertices[0].y);
-                    for (let i = 1; i < ent.vertices.length; i++) {
-                        ctx.lineTo(ent.vertices[i].x, ent.vertices[i].y);
+        // ទាញយក Token ដោយស្វ័យប្រវត្តិតាមរយៈ Cloudflare Worker
+        function getAccessToken(onGetAccessToken) {
+            fetch('https://autodesk-token.mansamy-ps17.workers.dev')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.access_token) {
+                        onGetAccessToken(data.access_token, data.expires_in);
+                    } else {
+                        console.error('Token acquisition failed:', data);
                     }
-                    if (ent.shape) ctx.closePath();
-                    ctx.stroke();
-                }
-            } else if (ent.type === 'CIRCLE') {
-                ctx.beginPath();
-                ctx.arc(ent.center.x, ent.center.y, ent.radius, 0, Math.PI * 2);
-                ctx.stroke();
-            } else if (ent.type === 'ARC') {
-                ctx.beginPath();
-                ctx.arc(ent.center.x, ent.center.y, ent.radius, ent.startAngle, ent.endAngle);
-                ctx.stroke();
-            } else if (ent.type === 'INSERT' && blocks[ent.name]) {
-                // គូរ Block របស់ AutoCAD
-                ctx.save();
-                ctx.translate(ent.position.x, ent.position.y);
-                if (ent.rotation) ctx.rotate((ent.rotation * Math.PI) / 180);
-                if (ent.scale) ctx.scale(ent.scale.x || 1, ent.scale.y || 1);
-
-                const blk = blocks[ent.name];
-                if (blk.entities) {
-                    blk.entities.forEach(subEnt => drawEntity(subEnt, '#ffb300'));
-                }
-                ctx.restore();
-            }
+                })
+                .catch(err => console.error('Error fetching access token:', err));
         }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawScreenGrid();
+        const options = {
+            env: 'AutodeskProduction2',
+            api: 'streamingV2',
+            getAccessToken: getAccessToken
+        };
 
-            ctx.save();
-            ctx.translate(panX, panY);
-            ctx.scale(scale, -scale);
-
-            entities.forEach(ent => drawEntity(ent));
-
-            if (measurePoints.length > 0) {
-                ctx.strokeStyle = '#ff1744';
-                ctx.fillStyle = '#ff1744';
-                ctx.lineWidth = Math.max(2 / scale, 2);
-
-                measurePoints.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, Math.max(5 / scale, 5), 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                if (measurePoints.length === 2) {
-                    ctx.beginPath();
-                    ctx.moveTo(measurePoints[0].x, measurePoints[0].y);
-                    ctx.lineTo(measurePoints[1].x, measurePoints[1].y);
-                    ctx.stroke();
-                }
-            }
-
-            ctx.restore();
-
-            if (measurePoints.length === 2) {
-                drawDimensionText(measurePoints[0], measurePoints[1]);
-            }
-        }
-
-        function drawDimensionText(p1, p2) {
-            const s1x = p1.x * scale + panX;
-            const s1y = panY - p1.y * scale;
-            const s2x = p2.x * scale + panX;
-            const s2y = panY - p2.y * scale;
-
-            const midX = (s1x + s2x) / 2;
-            const midY = (s1y + s2y) / 2;
-
-            const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-            const distText = (dist >= 1000) ? (dist / 1000).toFixed(2) + ' m' : dist.toFixed(0) + ' mm';
-
-            ctx.save();
-            ctx.font = 'bold 12px sans-serif';
-            const textWidth = ctx.measureText(distText).width;
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-            ctx.strokeStyle = '#ff1744';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.roundRect(midX - textWidth / 2 - 8, midY - 14, textWidth + 16, 22, 6);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(distText, midX, midY - 3);
-            ctx.restore();
-        }
-
-        function zoomIn() { zoomAtCenter(1.3); }
-        function zoomOut() { zoomAtCenter(0.7); }
-
-        function zoomAtCenter(factor) {
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
-            const prevScale = scale;
-            scale *= factor;
-            scale = Math.min(Math.max(0.00001, scale), 5000);
-
-            panX = cx - (cx - panX) * (scale / prevScale);
-            panY = cy - (cy - panY) * (scale / prevScale);
-            draw();
-        }
-
-        // មុខងារទាញប្លង់ឱ្យរត់មកចំកណ្តាលអេក្រង់ស្វ័យប្រវត្តិ
-        function zoomExtents() {
-            if (entities.length === 0) return;
-
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
-            function checkPoint(x, y) {
-                if (!isNaN(x) && !isNaN(y)) {
-                    minX = Math.min(minX, x);
-                    minY = Math.min(minY, y);
-                    maxX = Math.max(maxX, x);
-                    maxY = Math.max(maxY, y);
-                }
-            }
-
-            entities.forEach(ent => {
-                if (ent.vertices) {
-                    ent.vertices.forEach(v => checkPoint(v.x, v.y));
-                } else if (ent.center && ent.radius) {
-                    checkPoint(ent.center.x - ent.radius, ent.center.y - ent.radius);
-                    checkPoint(ent.center.x + ent.radius, ent.center.y + ent.radius);
-                } else if (ent.position) {
-                    checkPoint(ent.position.x, ent.position.y);
-                }
-            });
-
-            if (minX === Infinity || maxX === -Infinity) return;
-
-            const width = maxX - minX || 1000;
-            const height = maxY - minY || 1000;
-
-            const scaleX = (canvas.width * 0.85) / width;
-            const scaleY = (canvas.height * 0.85) / height;
-
-            scale = Math.min(scaleX, scaleY);
-            panX = (canvas.width - width * scale) / 2 - minX * scale;
-            panY = canvas.height - ((canvas.height - height * scale) / 2 - minY * scale);
-
-            draw();
-        }
-
-        // មុខងារអានហ្វាល
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const fileName = file.name.toLowerCase();
-            fileInfo.innerText = file.name;
-
-            if (fileName.endsWith('.dwg')) {
-                alert("⚠️ ហ្វាល .DWG ត្រូវបានការពារដោយ Binary Code របស់ Autodesk មិនអាចអានផ្ទាល់បានទេ!\n\n👉 វិធីបើកមើល៖ សូមបើកហ្វាលនេះក្នុង AutoCAD រួចចុច Save As ➔ ជ្រើសរើសប្រភេទ '.DXF' ទើបអាចបើកមើលគ្រប់បន្ទាត់បានភ្លាមៗ។");
+        // Initialize Autodesk Viewer Canvas & Tools
+        Autodesk.Viewing.Initializer(options, () => {
+            const htmlDiv = document.getElementById('viewerContainer');
+            viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
+            const startedCode = viewer.start();
+            if (startedCode > 0) {
+                console.error('Failed to create Viewer: WebGL not supported.');
                 return;
             }
-
-            if (fileName.endsWith('.dxf')) {
-                dropZone.style.display = 'none';
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const parser = new DxfParser();
-                        const dxf = parser.parseSync(e.target.result);
-                        entities = dxf.entities || [];
-                        blocks = dxf.blocks || {};
-                        zoomExtents();
-                    } catch (err) {
-                        alert("មិនអាចអានហ្វាល DXF នេះបានទេ! សូមប្រាកដថាបាន Save As ជា AutoCAD 2013 ឬ 2018 DXF។");
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        // Mouse & Touch Controls
-        viewport.addEventListener('mousedown', (e) => handlePointerDown(e.clientX, e.clientY));
-        window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
-        window.addEventListener('mouseup', () => isDragging = false);
-
-        let initialDist = null;
-        let initialTouchScale = 1;
-
-        viewport.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                handlePointerDown(e.touches[0].clientX, e.touches[0].clientY);
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                initialDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                initialTouchScale = scale;
-            }
+            console.log('Autodesk Viewer initialized successfully.');
         });
-
-        viewport.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (e.touches.length === 1 && isDragging) {
-                handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
-            } else if (e.touches.length === 2 && initialDist) {
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                scale = initialTouchScale * (currentDist / initialDist);
-                draw();
-            }
-        }, { passive: false });
-
-        viewport.addEventListener('touchend', () => {
-            isDragging = false;
-            initialDist = null;
-        });
-
-        function handlePointerDown(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = clientX - rect.left;
-            const mouseY = clientY - rect.top;
-
-            const worldX = (mouseX - panX) / scale;
-            const worldY = (panY - mouseY) / scale;
-
-            if (mode === 'measure') {
-                if (measurePoints.length >= 2) measurePoints = [];
-                measurePoints.push({ x: worldX, y: worldY });
-
-                if (measurePoints.length === 2) {
-                    const dist = Math.hypot(measurePoints[1].x - measurePoints[0].x, measurePoints[1].y - measurePoints[0].y);
-                    const formatted = (dist >= 1000) ? (dist / 1000).toFixed(2) + ' m' : dist.toFixed(0) + ' mm';
-                    measureVal.innerText = formatted;
-                    measureCard.style.display = 'flex';
-                }
-                draw();
-            } else {
-                isDragging = true;
-                startX = clientX - panX;
-                startY = clientY - panY;
-            }
-        }
-
-        function handlePointerMove(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = clientX - rect.left;
-            const mouseY = clientY - rect.top;
-
-            const worldX = ((mouseX - panX) / scale).toFixed(1);
-            const worldY = ((panY - mouseY) / scale).toFixed(1);
-            coordDisplay.innerText = `X: ${worldX}, Y: ${worldY}`;
-
-            if (isDragging && mode === 'pan') {
-                panX = clientX - startX;
-                panY = clientY - startY;
-                draw();
-            }
-        }
-
-        viewport.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const zoomFactor = 1.15;
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            const prevScale = scale;
-            if (e.deltaY < 0) scale *= zoomFactor;
-            else scale /= zoomFactor;
-            scale = Math.min(Math.max(0.00001, scale), 5000);
-
-            panX = mouseX - (mouseX - panX) * (scale / prevScale);
-            panY = mouseY - (mouseY - panY) * (scale / prevScale);
-            draw();
-        }, { passive: false });
-
-        resize();
     </script>
 </body>
 </html>
