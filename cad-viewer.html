@@ -4,79 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autodesk Official CAD Viewer</title>
-    <!-- Autodesk Viewer SDK Styles & Scripts -->
+    <!-- Autodesk Viewer SDK Styles & Engine -->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #1e1e1e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
         .toolbar {
-            height: 48px;
+            height: 52px;
             background: #252526;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 16px;
             border-bottom: 1px solid #3c3c3c;
-            z-index: 10;
+            z-index: 100;
             position: relative;
         }
+        .left-controls { display: flex; align-items: center; gap: 14px; }
         .btn-back {
-            color: #fff;
+            color: #ccc;
             text-decoration: none;
             font-size: 13px;
-            background: #3a3d41;
-            padding: 6px 14px;
+            background: #333;
+            padding: 7px 14px;
             border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { background: #444; color: #fff; }
+        
+        #status-pill {
+            font-size: 12px;
+            background: #111;
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #00bcd4;
+            border: 1px solid #333;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-upload {
+            background: #0e639c;
+            color: #fff;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 4px;
+            cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-back:hover { background: #505357; }
-        .title { color: #00bcd4; font-size: 14px; font-weight: 600; }
-        #viewerContainer { width: 100%; height: calc(100% - 48px); position: relative; }
+        .btn-upload:hover { background: #1177bb; }
+        .btn-upload:disabled { background: #444; cursor: not-allowed; }
+        
+        #viewerContainer {
+            width: 100%;
+            height: calc(100% - 52px);
+            position: relative;
+            background: #121212;
+        }
     </style>
 </head>
 <body>
+
     <div class="toolbar">
-        <a href="index.html" class="btn-back">← ត្រឡប់ក្រោយ</a>
-        <span class="title">Autodesk APS Engine (24/7 Active)</span>
+        <div class="left-controls">
+            <a href="index.html" class="btn-back">← ត្រឡប់ក្រោយ</a>
+            <span id="status-pill">● រង់ចាំការ Upload ប្លង់ DWG</span>
+        </div>
+        <div>
+            <input type="file" id="dwgFileInput" accept=".dwg,.dxf" style="display: none;">
+            <button id="uploadBtn" class="btn-upload" onclick="document.getElementById('dwgFileInput').click()">📂 បើកហ្វាល DWG</button>
+        </div>
     </div>
 
     <div id="viewerContainer"></div>
 
     <script>
-        let viewer;
+        const WORKER_URL = 'https://autodesk-token.mansamy-ps17.workers.dev';
+        const BUCKET_KEY = 'miimama_cad_bucket_2026';
+        let viewer = null;
+        let globalToken = '';
 
-        // ទាញយក Token ដោយស្វ័យប្រវត្តិតាមរយៈ Cloudflare Worker
-        function getAccessToken(onGetAccessToken) {
-            fetch('https://autodesk-token.mansamy-ps17.workers.dev')
-                .then(res => res.json())
-                .then(data => {
-                    if (data.access_token) {
-                        onGetAccessToken(data.access_token, data.expires_in);
-                    } else {
-                        console.error('Token acquisition failed:', data);
-                    }
-                })
-                .catch(err => console.error('Error fetching access token:', err));
+        const statusPill = document.getElementById('status-pill');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        function setStatus(text, color = '#00bcd4') {
+            statusPill.style.color = color;
+            statusPill.innerHTML = `● ${text}`;
         }
 
-        const options = {
+        // ១. ទាញយក Token ពី Cloudflare Worker
+        async function fetchAccessToken(onGetAccessToken) {
+            try {
+                const res = await fetch(WORKER_URL);
+                const data = await res.json();
+                if (data.access_token) {
+                    globalToken = data.access_token;
+                    if (onGetAccessToken) onGetAccessToken(data.access_token, data.expires_in);
+                }
+            } catch (err) {
+                setStatus('កំហុសក្នុងការទាញយក Token', '#ff5252');
+            }
+        }
+
+        // ២. ចាប់ផ្ដើម Autodesk Viewer Canvas
+        const initOptions = {
             env: 'AutodeskProduction2',
             api: 'streamingV2',
-            getAccessToken: getAccessToken
+            getAccessToken: fetchAccessToken
         };
 
-        // Initialize Autodesk Viewer Canvas & Tools
-        Autodesk.Viewing.Initializer(options, () => {
-            const htmlDiv = document.getElementById('viewerContainer');
-            viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv);
-            const startedCode = viewer.start();
-            if (startedCode > 0) {
-                console.error('Failed to create Viewer: WebGL not supported.');
-                return;
-            }
-            console.log('Autodesk Viewer initialized successfully.');
+        Autodesk.Viewing.Initializer(initOptions, () => {
+            const container = document.getElementById('viewerContainer');
+            viewer = new Autodesk.Viewing.GuiViewer3D(container);
+            viewer.start();
+            setStatus('ប្រព័ន្ធ Autodesk រួចរាល់សម្រាប់ការប្រើប្រាស់', '#4caf50');
         });
+
+        // ៣. ដំណើរការ Upload និង Translate ប្លង់ DWG
+        document.getElementById('dwgFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            uploadBtn.disabled = true;
+            setStatus(`កំពុងរៀបចំ Upload: ${file.name}...`);
+
+            try {
+                if (!globalToken) await fetchAccessToken();
+
+                // ក. បង្កើត Bucket (បើមិនទាន់មាន)
+                await fetch('https://developer.api.autodesk.com/oss/v2/buckets', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${globalToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bucketKey: BUCKET_KEY, policyKey: 'transient' })
+                });
+
+                // ខ. ស្នើសុំ Signed S3 Upload URL (ស្តង់ដារផ្លូវការ Direct-to-S3)
+                setStatus('កំពុង Upload ទៅកាន់ Autodesk Cloud...');
+                const safeName = encodeURIComponent(file.name);
+                const s3InitRes = await fetch(`https://developer.api.autodesk.com/oss/v2/buckets/${BUCKET_KEY}/objects/${safeName}/signeds3upload`, {
+                    headers: { 'Authorization': `Bearer ${globalToken}` }
+                });
+                const s3InitData = await s3InitRes.json();
+
+                // គ. បញ្ជូនទិន្នន័យហ្វាលទៅកាន់ Cloud S3
+                await fetch(s3InitData.urls[0], {
+                    method: 'PUT',
+                    body: file
+                });
+
+                // ឃ. បញ្ជាក់ការ Upload ជោគជ័យ
+                const completeRes = await fetch(`https://developer.api.autodesk.com/oss/v2/buckets/${BUCKET_KEY}/objects/${safeName}/signeds3upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${globalToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ uploadKey: s3InitData.uploadKey })
+                });
+                const completeData = await completeRes.json();
+
+                // ង. បម្លែង Base64 URN
+                const urn = btoa(completeData.objectId).replace(/=/g, '');
+
+                // ច. បញ្ជាឱ្យ Autodesk Translate ទៅជាទម្រង់ SVF2
+                setStatus('កំពុងបម្លែងទម្រង់ប្លង់ (Translating)...');
+                await fetch('https://developer.api.autodesk.com/modelderivative/v2/designdata/job', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${globalToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: { urn: urn },
+                        output: { formats: [{ type: 'svf2', views: ['2d', '3d'] }] }
+                    })
+                });
+
+                // ឆ. តាមដានដំណើរការបម្លែងរហូតដល់ចប់
+                pollManifestStatus(urn);
+
+            } catch (err) {
+                setStatus('បរាជ័យ: ' + err.message, '#ff5252');
+                uploadBtn.disabled = false;
+            }
+        });
+
+        // ៤. មុខងារត្រួតពិនិត្យដំណើរការ Translate
+        function pollManifestStatus(urn) {
+            const timer = setInterval(async () => {
+                try {
+                    const res = await fetch(`https://developer.api.autodesk.com/modelderivative/v2/designdata/${urn}/manifest`, {
+                        headers: { 'Authorization': `Bearer ${globalToken}` }
+                    });
+                    const data = await res.json();
+                    
+                    setStatus(`កំពុងដំណើរការបម្លែង: ${data.progress || '0%'}`);
+
+                    if (data.status === 'success') {
+                        clearInterval(timer);
+                        setStatus('បម្លែងជោគជ័យ! កំពុងបើកប្លង់...', '#4caf50');
+                        loadModel(urn);
+                        uploadBtn.disabled = false;
+                    } else if (data.status === 'failed') {
+                        clearInterval(timer);
+                        setStatus('ការបម្លែងប្លង់បរាជ័យ (File format error)', '#ff5252');
+                        uploadBtn.disabled = false;
+                    }
+                } catch (e) {
+                    clearInterval(timer);
+                    uploadBtn.disabled = false;
+                }
+            }, 2500);
+        }
+
+        // ៥. Load ប្លង់បង្ហាញលើអេក្រង់
+        function loadModel(urn) {
+            const documentId = 'urn:' + urn;
+            Autodesk.Viewing.Document.load(documentId, (doc) => {
+                const defaultModel = doc.getRoot().getDefaultGeometry();
+                viewer.loadDocumentNode(doc, defaultModel);
+                setStatus('បានផ្ទុកប្លង់រួចរាល់ ១០០%', '#4caf50');
+            }, (errorCode) => {
+                setStatus('មិនអាចបើកប្លង់បានទេ Error: ' + errorCode, '#ff5252');
+            });
+        }
     </script>
 </body>
 </html>
