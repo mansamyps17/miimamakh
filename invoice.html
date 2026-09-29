@@ -2,250 +2,823 @@
 <html lang="km">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ប្រព័ន្ធវិក្កយបត្រ (Invoice System)</title>
-    <!-- ប្រើ html2canvas ដើម្បីទាញយករូបភាព PNG -->
+    <title>វិក្កយបត្រ (INVOICE)</title>
+    <!-- ភ្ជាប់ Library សម្រាប់បំលែង HTML ទៅជារូបភាព -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Khmer OS Siemreap', 'Segoe UI', sans-serif; }
-        body { background: #f4f4f4; padding: 20px; display: flex; justify-content: center; }
-        .invoice-wrapper { width: 100%; max-width: 900px; }
-        .invoice-container { background: #fff; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { 
+            font-family: 'Battambang', sans-serif; 
+            margin: 0; 
+            padding: 5px; 
+            color: #111; 
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+        }
+        .invoice-container { 
+            width: 100%; 
+            max-width: 800px; 
+            margin: auto; 
+            background: #fff;
+            border: 1px solid #ccc; 
+            padding: 15px 20px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            background: #eee;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 2px solid #2e7d32; 
+            padding-bottom: 8px; 
+            margin-bottom: 10px;
+        }
         
-        /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 20px; margin-bottom: 20px; }
-        .logo-box { width: 250px; height: 100px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #888; }
-        .title { color: #2e7d32; font-size: 28px; font-weight: bold; }
+        /* ប្រអប់ Logo Wrapper និងប៊ូតុងលុប */
+        .media-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .remove-media-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e53935;
+            color: white;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 13px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+        .remove-media-btn:hover {
+            background: #c62828;
+            transform: scale(1.1);
+        }
 
-        /* Info Section */
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 20px; }
-        .info-group { display: flex; align-items: center; margin-bottom: 10px; }
-        .info-group label { width: 100px; font-size: 14px; }
-        .info-group input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        .logo-container { 
+            width: 320px; 
+            height: 130px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+            cursor: pointer;
+            border: 2px dashed #bbb;
+            border-radius: 6px;
+            padding: 2px;
+            background: #fafafa;
+        }
+        .logo-container span {
+            color: #444;
+            font-size: 13px;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+        }
+        .title { 
+            font-size: 26px; 
+            font-weight: bold; 
+            color: #1b5e20; 
+            text-decoration: underline; 
+            text-align: right;
+        }
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-bottom: 8px; 
+        }
+        .info-box { 
+            border: 1px solid #aaa; 
+            padding: 6px 10px; 
+            border-radius: 6px; 
+            background: #fff;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        .info-table td {
+            border: none !important;
+            padding: 3px 0 !important;
+            font-size: 11px;
+            font-weight: bold;
+            color: #222;
+            vertical-align: middle;
+            text-align: left !important;
+        }
+        .info-table td.label-col {
+            width: 95px;
+            white-space: nowrap;
+        }
+        .info-table input {
+            width: 100% !important;
+            padding: 2px 4px !important;
+            border: 1px solid #bbb !important;
+            border-radius: 4px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 11px;
+            color: #111;
+            font-weight: normal;
+            box-sizing: border-box !important;
+            text-align: left !important;
+            background: #fff;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        input[type="date"]::-webkit-date-and-time-value {
+            text-align: left !important;
+        }
 
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th { background: #2e7d32; color: white; padding: 10px; text-align: left; font-size: 14px; }
-        td { padding: 8px; border-bottom: 1px solid #ddd; }
-        td input { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
-        .btn-add { background: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
-        .btn-del { background: #d32f2f; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+        table.inv-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 6px; 
+            margin-bottom: 8px;
+        }
+        table.inv-table th { 
+            background-color: #2e7d32 !important; 
+            color: #ffffff !important; 
+            padding: 5px; 
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #2e7d32 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        table.inv-table td { 
+            border: 1px solid #333; 
+            padding: 3px 5px; 
+            text-align: center; 
+            font-size: 11px;
+            color: #111;
+        }
+        table.inv-table td.desc-cell {
+            text-align: left;
+            padding-left: 6px;
+        }
+        table.inv-table td input {
+            width: 100%;
+            border: none;
+            text-align: center;
+            font-family: 'Battambang', sans-serif;
+            font-size: 11px;
+            background: transparent;
+            color: #111;
+        }
+        table.inv-table td.desc-cell input {
+            text-align: left;
+        }
+        table.inv-table td input:focus {
+            outline: 1px solid #2e7d32;
+        }
 
-        /* Footer / Totals */
-        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
-        .qr-box { width: 150px; height: 150px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #888; }
-        .totals .total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 15px; }
-        .totals .total-row input { width: 120px; padding: 6px; text-align: right; border: 1px solid #ccc; border-radius: 4px; }
-        .grand-total { color: #2e7d32; font-weight: bold; font-size: 18px; }
+        .qr-section { 
+            display: flex; 
+            justify-content: space-between;
+            align-items: flex-start; 
+            margin-top: 8px; 
+            border-top: 1px dashed #aaa;
+            padding-top: 8px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .qr-container { 
+            width: 160px; 
+            height: 160px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+            border: 2px dashed #bbb;
+            border-radius: 6px;
+            background: #fafafa;
+            text-align: center;
+        }
+        .qr-container span {
+            color: #444;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-        /* Action Buttons */
-        .action-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; padding: 12px; border: none; border-radius: 5px; color: white; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .btn-print { background: #2e7d32; }
-        .btn-png { background: #0288d1; }
-        .btn-clear { background: #d32f2f; flex: 0.5; }
+        .totals { 
+            width: 280px; 
+        }
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            border: none !important;
+            border-bottom: 1px solid #ddd !important;
+            padding: 3px 0 !important;
+            font-size: 11px;
+            font-weight: bold;
+            color: #111;
+            vertical-align: middle;
+        }
+        .totals-table td.tot-label {
+            text-align: left !important;
+        }
+        .totals-table td.tot-sym {
+            text-align: right !important;
+            width: 25px;
+            padding-right: 4px !important;
+        }
+        .totals-table td.tot-val {
+            text-align: right !important;
+            width: 75px;
+        }
+        .totals-table tr.grand-total-row td {
+            border-bottom: none !important;
+            font-size: 13px;
+            color: #1b5e20;
+            padding-top: 4px !important;
+        }
+        .discount-input {
+            width: 65px;
+            text-align: right;
+            padding: 1px 3px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            font-family: 'Battambang', sans-serif;
+            font-size: 11px;
+            color: #111;
+            background: #fff;
+            box-sizing: border-box;
+        }
 
-        /* Hide specific elements when printing */
+        .action-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Battambang', sans-serif;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        .action-btn:hover {
+            background-color: #1b5e20;
+        }
+        .btn-image {
+            background-color: #0288d1;
+        }
+        .btn-image:hover {
+            background-color: #0277bd;
+        }
+        .btn-clear {
+            background-color: #d32f2f;
+        }
+        .btn-clear:hover {
+            background-color: #b71c1c;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .bottom-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .bottom-buttons button {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* ផ្នែក PRINT/PDF */
         @media print {
-            body { padding: 0; background: #fff; }
-            .invoice-wrapper { box-shadow: none; max-width: 100%; }
-            .action-buttons, .btn-add, .btn-del { display: none !important; }
-            td input, .info-group input, .total-row input { border: none; background: transparent; padding: 0; }
+            @page {
+                size: A4 portrait;
+                margin: 4mm 5mm;
+            }
+            .no-print { display: none !important; }
+            html, body { 
+                background-color: #fff !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                color: #000 !important; 
+            }
+            .invoice-container { 
+                border: none !important; 
+                box-shadow: none !important; 
+                padding: 0 !important; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            input { 
+                border: none !important; 
+                background: transparent !important; 
+                color: #000 !important; 
+                box-shadow: none !important;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                display: none !important;
+            }
+            
+            .logo-container {
+                height: 120px !important;
+                width: 300px !important;
+            }
+            .qr-container {
+                width: 150px !important;
+                height: 150px !important;
+            }
+
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+
+            th {
+                background-color: #2e7d32 !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .logo-container:not(:has(#logoPreview[src]:not([src=""]))) {
+                border: none !important;
+                background: transparent !important;
+            }
+            .logo-container:not(:has(#logoPreview[src]:not([src=""]))) span {
+                display: none !important;
+            }
+
+            .qr-container:not(:has(#qrPreview[src]:not([src=""]))) {
+                border: none !important;
+                background: transparent !important;
+            }
+            .qr-container:not(:has(#qrPreview[src]:not([src=""]))) span {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="invoice-wrapper">
-    <!-- Invoice Content -->
-    <div class="invoice-container" id="invoice-content">
+    <div class="invoice-container" id="invoiceContainer">
+        <div class="top-controls no-print">
+            <a href="index.html" class="back-btn">← ត្រឡប់ក្រោយ</a>
+            <div>
+                <label for="currency" style="font-size: 11px; font-weight: bold;">រូបិយប័ណ្ណ:</label>
+                <select id="currency" onchange="calculateTotal()" style="padding: 2px 4px; font-family: 'Battambang', sans-serif; font-size: 11px; border-radius: 4px; border: 1px solid #aaa;">
+                    <option value="$">ដុល្លារ ($)</option>
+                    <option value="៛">រៀល (៛)</option>
+                </select>
+            </div>
+        </div>
+        
         <div class="header">
-            <div class="logo-box">+ ដាក់ Logo</div>
-            <div class="title">វិក្កយបត្រ (INVOICE)</div>
+            <div>
+                <div class="media-wrapper">
+                    <div class="logo-container" onclick="document.getElementById('logoInput').click()">
+                        <span id="logoText">+ ដាក់ Logo</span>
+                        <img id="logoPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                    </div>
+                    <button id="removeLogoBtn" class="remove-media-btn no-print" onclick="removeLogo(event)" title="លុប Logo">✕</button>
+                    <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="loadLogo(event)">
+                </div>
+            </div>
+            <div class="title"><u>វិក្កយបត្រ (INVOICE)</u></div>
         </div>
 
         <div class="info-grid">
-            <div>
-                <div class="info-group"><label>អតិថិជន:</label><input type="text" id="inv_customer" oninput="saveData()"></div>
-                <div class="info-group"><label>លេខទូរស័ព្ទ:</label><input type="text" id="inv_phone" oninput="saveData()"></div>
-                <div class="info-group"><label>អាសយដ្ឋាន:</label><input type="text" id="inv_address" oninput="saveData()"></div>
+            <div class="info-box">
+                <table class="info-table">
+                    <tr>
+                        <td class="label-col">អតិថិជន:</td>
+                        <td><input type="text" id="invCustomer" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">លេខទូរស័ព្ទ:</td>
+                        <td><input type="text" id="invPhone" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">អាសយដ្ឋាន:</td>
+                        <td><input type="text" id="invAddress" value=""></td>
+                    </tr>
+                </table>
             </div>
-            <div>
-                <div class="info-group"><label>វិក្កយបត្រលេខ:</label><input type="text" id="inv_no" oninput="saveData()"></div>
-                <div class="info-group"><label>កាលបរិច្ឆេទ:</label><input type="date" id="inv_date" oninput="saveData()"></div>
+            <div class="info-box">
+                <table class="info-table">
+                    <tr>
+                        <td class="label-col">វិក្កយបត្រលេខ:</td>
+                        <td><input type="text" id="invNo" value=""></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">កាលបរិច្ឆេទ:</td>
+                        <td><input type="date" id="invDate"></td>
+                    </tr>
+                </table>
             </div>
         </div>
 
-        <button class="btn-add" onclick="addRow()">+ បន្ថែមទំនិញ</button>
-        <table id="itemTable">
+        <button onclick="addRow()" class="action-btn no-print">+ បន្ថែមទំនិញ</button>
+
+        <table class="inv-table">
             <thead>
                 <tr>
-                    <th width="5%">ល.រ</th>
-                    <th width="40%">បរិយាយ (Description)</th>
-                    <th width="10%">ឯកតា</th>
-                    <th width="10%">បរិមាណ</th>
-                    <th width="15%">តម្លៃ ($)</th>
-                    <th width="15%">តម្លៃសរុប</th>
-                    <th width="5%">លុប</th>
+                    <th style="width: 35px;">លរ</th>
+                    <th>បរិយាយ (Description)</th>
+                    <th style="width: 65px;">ឯកតា</th>
+                    <th style="width: 55px;">បរិមាណ</th>
+                    <th style="width: 75px;" id="thPrice">តម្លៃ ($)</th>
+                    <th style="width: 85px;" id="thAmount">តម្លៃសរុប</th>
+                    <th class="no-print" style="width: 35px;">លុប</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Rows will be injected here by JS -->
+            <tbody id="tableBody">
+                <!-- ជួរទំនិញនឹងត្រូវបញ្ចូលស្វ័យប្រវត្តិដោយ JavaScript -->
             </tbody>
         </table>
 
-        <div class="footer-grid">
+        <div class="qr-section">
             <div>
-                <p style="font-size: 14px; font-weight: bold;">Scan Pay Here:</p>
-                <div class="qr-box">+ ដាក់ QR</div>
+                <p style="margin: 0 0 4px 0; font-size: 10px; font-weight: bold;">Scan Pay Here:</p>
+                <div class="media-wrapper">
+                    <div class="qr-container" onclick="document.getElementById('qrInput').click()">
+                        <span id="qrText">+ ដាក់ QR</span>
+                        <img id="qrPreview" src="" style="max-width:100%; max-height:100%; object-fit:contain; display:none;">
+                    </div>
+                    <button id="removeQrBtn" class="remove-media-btn no-print" onclick="removeQR(event)" title="លុប QR">✕</button>
+                    <input type="file" id="qrInput" accept="image/*" style="display:none;" onchange="loadQR(event)">
+                </div>
             </div>
             <div class="totals">
-                <div class="total-row"><span>សរុប (Sub Total):</span><span id="txt_subtotal">$ 0.00</span></div>
-                <div class="total-row"><span>បញ្ចុះតម្លៃ (Discount):</span> <input type="number" id="inv_discount" value="0" oninput="calculateTotal(); saveData()"></div>
-                <div class="total-row">
-                    <label><input type="checkbox" id="inv_vat" onchange="calculateTotal(); saveData()"> អាករ (VAT 10%):</label>
-                    <span id="txt_vat">$ 0.00</span>
-                </div>
-                <div class="total-row grand-total"><span>សរុបទាំងអស់ (Grand Total):</span><span id="txt_grandtotal">$ 0.00</span></div>
+                <table class="totals-table">
+                    <tr>
+                        <td class="tot-label">សរុប (Sub Total):</td>
+                        <td class="tot-sym" id="subSym">$</td>
+                        <td class="tot-val" id="subTotal">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="tot-label">បញ្ចុះតម្លៃ (Discount):</td>
+                        <td class="tot-sym" id="discSym">$</td>
+                        <td class="tot-val">
+                            <input type="number" id="discount" value="0.00" step="0.01" oninput="calculateTotal()" class="discount-input">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tot-label"><input type="checkbox" id="vatToggle" onchange="calculateTotal()"> អាករ (VAT 10%):</td>
+                        <td class="tot-sym" id="vatSym">$</td>
+                        <td class="tot-val" id="vatAmount">0.00</td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td class="tot-label">សរុបទាំងអស់ (Grand Total):</td>
+                        <td class="tot-sym" id="grandSym">$</td>
+                        <td class="tot-val" id="grandTotal">0.00</td>
+                    </tr>
+                </table>
             </div>
+        </div>
+
+        <!-- ប៊ូតុង Print / Save PDF និង Save ជារូបភាព -->
+        <div class="bottom-buttons no-print">
+            <button onclick="window.print()" class="action-btn">🖨️ បោះពុម្ព / Save PDF</button>
+            <button onclick="saveAsImage()" class="action-btn btn-image">🖼️ រក្សាទុកជារូបភាព</button>
+            <!-- នេះគឺជាប៊ូតុង Clear Data ដែលទើបបន្ថែមថ្មី -->
+            <button onclick="clearData()" class="action-btn btn-clear">🧹 លុបទិន្នន័យចោល</button>
         </div>
     </div>
 
-    <!-- Action Buttons (Not included in PNG/PDF) -->
-    <div class="action-buttons">
-        <button class="btn btn-print" onclick="window.print()">🖨️ បោះពុម្ព / Save ជា PDF</button>
-        <button class="btn btn-png" onclick="saveAsPNG()">🖼️ រក្សាទុកជារូបភាព (PNG)</button>
-        <button class="btn btn-clear" onclick="clearData()">🧹 លុបទិន្នន័យ (វិក្កយបត្រថ្មី)</button>
-    </div>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", loadData);
-
-    // ១. បន្ថែមជួរទំនិញ
-    function addRow(desc = '', unit = '', qty = 1, price = 0) {
-        const tbody = document.querySelector('#itemTable tbody');
-        const tr = document.createElement('tr');
-        
-        tr.innerHTML = `
-            <td class="row-num">1</td>
-            <td><input type="text" class="desc" value="${desc}" oninput="saveData()"></td>
-            <td><input type="text" class="unit" value="${unit}" oninput="saveData()"></td>
-            <td><input type="number" class="qty" value="${qty}" oninput="calculateTotal(); saveData()"></td>
-            <td><input type="number" class="price" value="${price}" oninput="calculateTotal(); saveData()"></td>
-            <td class="row-total">$ 0.00</td>
-            <td><button class="btn-del" onclick="removeRow(this)">X</button></td>
-        `;
-        tbody.appendChild(tr);
-        updateRowNumbers();
-        calculateTotal();
-        saveData();
-    }
-
-    // ២. លុបជួរទំនិញ
-    function removeRow(btn) {
-        btn.closest('tr').remove();
-        updateRowNumbers();
-        calculateTotal();
-        saveData();
-    }
-
-    // រៀបលំដាប់លេខរៀងឡើងវិញ
-    function updateRowNumbers() {
-        const rows = document.querySelectorAll('#itemTable tbody tr');
-        rows.forEach((row, index) => {
-            row.querySelector('.row-num').innerText = index + 1;
-        });
-    }
-
-    // ៣. គណនាតម្លៃសរុប (Calculate)
-    function calculateTotal() {
-        let subtotal = 0;
-        const rows = document.querySelectorAll('#itemTable tbody tr');
-        
-        rows.forEach(row => {
-            const qty = parseFloat(row.querySelector('.qty').value) || 0;
-            const price = parseFloat(row.querySelector('.price').value) || 0;
-            const total = qty * price;
-            row.querySelector('.row-total').innerText = '$ ' + total.toFixed(2);
-            subtotal += total;
-        });
-
-        const discount = parseFloat(document.getElementById('inv_discount').value) || 0;
-        const isVat = document.getElementById('inv_vat').checked;
-        
-        let subAfterDiscount = subtotal - discount;
-        if(subAfterDiscount < 0) subAfterDiscount = 0;
-        
-        let vatAmount = isVat ? (subAfterDiscount * 0.1) : 0;
-        let grandTotal = subAfterDiscount + vatAmount;
-
-        document.getElementById('txt_subtotal').innerText = '$ ' + subtotal.toFixed(2);
-        document.getElementById('txt_vat').innerText = '$ ' + vatAmount.toFixed(2);
-        document.getElementById('txt_grandtotal').innerText = '$ ' + grandTotal.toFixed(2);
-    }
-
-    // ៤. រក្សាទុកទិន្នន័យ (Auto-Save to LocalStorage)
-    function saveData() {
-        // Save Inputs
-        const ids = ['inv_customer', 'inv_phone', 'inv_address', 'inv_no', 'inv_date', 'inv_discount'];
-        ids.forEach(id => localStorage.setItem(id, document.getElementById(id).value));
-        localStorage.setItem('inv_vat', document.getElementById('inv_vat').checked);
-
-        // Save Table Rows
-        const rows = document.querySelectorAll('#itemTable tbody tr');
-        const items = [];
-        rows.forEach(row => {
-            items.push({
-                desc: row.querySelector('.desc').value,
-                unit: row.querySelector('.unit').value,
-                qty: row.querySelector('.qty').value,
-                price: row.querySelector('.price').value
-            });
-        });
-        localStorage.setItem('inv_items', JSON.stringify(items));
-    }
-
-    // ៥. ទាញទិន្នន័យមកវិញពេល Refresh (Load Data)
-    function loadData() {
-        // Load Inputs
-        const ids = ['inv_customer', 'inv_phone', 'inv_address', 'inv_no', 'inv_date', 'inv_discount'];
-        ids.forEach(id => {
-            if (localStorage.getItem(id) !== null) document.getElementById(id).value = localStorage.getItem(id);
-        });
-        
-        if (localStorage.getItem('inv_vat') === 'true') {
-            document.getElementById('inv_vat').checked = true;
+    <script>
+        // មុខងារបន្ថែមជួរ (កែប្រែបន្តិចដើម្បីអាចទទួលទិន្នន័យចាស់បាន)
+        function addRow(desc = '', unit = '', qty = '', price = '') {
+            let table = document.getElementById('tableBody');
+            let rowCount = table.rows.length + 1;
+            let row = table.insertRow();
+            row.innerHTML = `
+                <td>${rowCount}</td>
+                <td class="desc-cell"><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="number" oninput="calculateTotal()"></td>
+                <td><input type="number" step="0.01" oninput="calculateTotal()"></td>
+                <td class="amount">0.00</td>
+                <td class="no-print"><button onclick="deleteRow(this)" style="color:red; border:none; background:none; cursor:pointer;">✕</button></td>
+            `;
+            // បំពេញតម្លៃ
+            row.cells[1].querySelector('input').value = desc;
+            row.cells[2].querySelector('input').value = unit;
+            row.cells[3].querySelector('input').value = qty;
+            row.cells[4].querySelector('input').value = price;
+            
+            calculateTotal();
         }
 
-        // Load Table Rows
-        const savedItems = JSON.parse(localStorage.getItem('inv_items'));
-        if (savedItems && savedItems.length > 0) {
-            savedItems.forEach(item => addRow(item.desc, item.unit, item.qty, item.price));
-        } else {
-            addRow(); // ដាក់ជួរទទេមួយបើអត់មានទិន្នន័យចាស់
+        function deleteRow(btn) {
+            let row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateRowNumbers();
+            calculateTotal();
+            saveData();
         }
-    }
 
-    // ៦. លុបទិន្នន័យដើម្បីសរសេរថ្មី (Clear Data)
-    function clearData() {
-        if(confirm("តើអ្នកពិតជាចង់លុបទិន្នន័យនេះចោល ដើម្បីបង្កើតវិក្កយបត្រថ្មីមែនទេ?")) {
-            localStorage.clear();
-            location.reload();
+        function updateRowNumbers() {
+            let rows = document.getElementById('tableBody').rows;
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].innerText = i + 1;
+            }
         }
-    }
 
-    // ៧. ទាញយកជារូបភាព PNG
-    function saveAsPNG() {
-        const invoiceEl = document.getElementById('invoice-content');
-        html2canvas(invoiceEl, { scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            const invNo = document.getElementById('inv_no').value || 'New';
-            link.download = `Invoice_${invNo}.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-        });
-    }
-</script>
+        function calculateTotal() {
+            let curr = document.getElementById('currency').value;
+
+            document.getElementById('thPrice').innerText = `តម្លៃ (${curr})`;
+            document.getElementById('thAmount').innerText = `តម្លៃសរុប`;
+            document.getElementById('subSym').innerText = curr;
+            document.getElementById('discSym').innerText = curr;
+            document.getElementById('vatSym').innerText = curr;
+            document.getElementById('grandSym').innerText = curr;
+
+            let rows = document.getElementById('tableBody').rows;
+            let subTotal = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                let qty = parseFloat(rows[i].cells[3].getElementsByTagName('input')[0].value) || 0;
+                let price = parseFloat(rows[i].cells[4].getElementsByTagName('input')[0].value) || 0;
+                let amount = qty * price;
+                
+                if (curr === '៛') {
+                    rows[i].cells[5].innerText = amount.toLocaleString('en-US');
+                } else {
+                    rows[i].cells[5].innerText = amount.toFixed(2);
+                }
+                subTotal += amount;
+            }
+
+            let discount = parseFloat(document.getElementById('discount').value) || 0;
+            let afterDiscount = subTotal - discount;
+            if (afterDiscount < 0) afterDiscount = 0;
+            
+            let vat = 0;
+            if (document.getElementById('vatToggle').checked) {
+                vat = afterDiscount * 0.10;
+            }
+            
+            let grandTotal = afterDiscount + vat;
+
+            if (curr === '៛') {
+                document.getElementById('subTotal').innerText = subTotal.toLocaleString('en-US');
+                document.getElementById('vatAmount').innerText = vat.toLocaleString('en-US');
+                document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('en-US');
+            } else {
+                document.getElementById('subTotal').innerText = subTotal.toFixed(2);
+                document.getElementById('vatAmount').innerText = vat.toFixed(2);
+                document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+            }
+        }
+
+        function loadLogo(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let output = document.getElementById('logoPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+                document.getElementById('logoText').style.display = 'none';
+                let container = document.getElementById('logoPreview').parentNode;
+                container.style.border = 'none';
+                container.style.background = 'transparent';
+                document.getElementById('removeLogoBtn').style.display = 'flex';
+                saveData(); // Save upon uploading logo
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        function removeLogo(event) {
+            if (event) event.stopPropagation();
+            let img = document.getElementById('logoPreview');
+            img.src = '';
+            img.style.display = 'none';
+            document.getElementById('logoText').style.display = 'block';
+            let container = img.parentNode;
+            container.style.border = '2px dashed #bbb';
+            container.style.background = '#fafafa';
+            document.getElementById('logoInput').value = '';
+            document.getElementById('removeLogoBtn').style.display = 'none';
+            saveData();
+        }
+
+        function loadQR(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let output = document.getElementById('qrPreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+                document.getElementById('qrText').style.display = 'none';
+                let container = document.getElementById('qrPreview').parentNode;
+                container.style.border = 'none';
+                container.style.background = 'transparent';
+                document.getElementById('removeQrBtn').style.display = 'flex';
+                saveData(); // Save upon uploading QR
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        function removeQR(event) {
+            if (event) event.stopPropagation();
+            let img = document.getElementById('qrPreview');
+            img.src = '';
+            img.style.display = 'none';
+            document.getElementById('qrText').style.display = 'block';
+            let container = img.parentNode;
+            container.style.border = '2px dashed #bbb';
+            container.style.background = '#fafafa';
+            document.getElementById('qrInput').value = '';
+            document.getElementById('removeQrBtn').style.display = 'none';
+            saveData();
+        }
+
+        async function saveAsImage() {
+            let container = document.getElementById('invoiceContainer');
+            
+            try {
+                let canvas = await html2canvas(container, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    ignoreElements: function(element) {
+                        return element.classList.contains('no-print');
+                    }
+                });
+
+                canvas.toBlob(async function(blob) {
+                    const file = new File([blob], 'វិក្កយបត្រ_INVOICE.png', { type: 'image/png' });
+                    
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'វិក្កយបត្រ (INVOICE)'
+                            });
+                            return;
+                        } catch (error) {
+                            if (error.name === 'AbortError') return; 
+                        }
+                    }
+
+                    let link = document.createElement('a');
+                    link.download = 'វិក្កយបត្រ_INVOICE.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }, 'image/png');
+
+            } catch (err) {
+                alert('មិនអាចទាញយករូបភាពបានទេ សូមព្យាយាមម្តងទៀត!');
+                console.error(err);
+            }
+        }
+
+        // ==========================================
+        // មុខងារថ្មី៖ រក្សាទុកទិន្នន័យ (Auto Save & Load)
+        // ==========================================
+
+        function saveData() {
+            const data = {
+                currency: document.getElementById('currency').value,
+                customer: document.getElementById('invCustomer').value,
+                phone: document.getElementById('invPhone').value,
+                address: document.getElementById('invAddress').value,
+                invNo: document.getElementById('invNo').value,
+                invDate: document.getElementById('invDate').value,
+                discount: document.getElementById('discount').value,
+                vat: document.getElementById('vatToggle').checked,
+                items: []
+            };
+
+            // Save Table items
+            const rows = document.getElementById('tableBody').rows;
+            for (let i = 0; i < rows.length; i++) {
+                data.items.push({
+                    desc: rows[i].cells[1].getElementsByTagName('input')[0].value,
+                    unit: rows[i].cells[2].getElementsByTagName('input')[0].value,
+                    qty: rows[i].cells[3].getElementsByTagName('input')[0].value,
+                    price: rows[i].cells[4].getElementsByTagName('input')[0].value,
+                });
+            }
+
+            localStorage.setItem('miiInvoiceData', JSON.stringify(data));
+
+            // Save Images (Logo & QR) if they exist
+            try {
+                const logo = document.getElementById('logoPreview');
+                if(logo.style.display === 'block') {
+                    localStorage.setItem('miiInvoiceLogo', logo.src);
+                } else {
+                    localStorage.removeItem('miiInvoiceLogo');
+                }
+
+                const qr = document.getElementById('qrPreview');
+                if(qr.style.display === 'block') {
+                    localStorage.setItem('miiInvoiceQR', qr.src);
+                } else {
+                    localStorage.removeItem('miiInvoiceQR');
+                }
+            } catch(e) {
+                console.log("រូបភាពមានទំហំធំពេក មិនអាច Save អូតូបានទេ។");
+            }
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('miiInvoiceData');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                if(data.currency) document.getElementById('currency').value = data.currency;
+                if(data.customer) document.getElementById('invCustomer').value = data.customer;
+                if(data.phone) document.getElementById('invPhone').value = data.phone;
+                if(data.address) document.getElementById('invAddress').value = data.address;
+                if(data.invNo) document.getElementById('invNo').value = data.invNo;
+                if(data.invDate) document.getElementById('invDate').value = data.invDate;
+                if(data.discount) document.getElementById('discount').value = data.discount;
+                if(data.vat) document.getElementById('vatToggle').checked = data.vat;
+
+                if (data.items && data.items.length > 0) {
+                    document.getElementById('tableBody').innerHTML = ''; // លុបជួរចាស់
+                    data.items.forEach(item => {
+                        addRow(item.desc, item.unit, item.qty, item.price);
+                    });
+                } else {
+                    addRow();
+                }
+            } else {
+                // បើគ្មានទិន្នន័យចាស់ទេ កំណត់ថ្ងៃខែបច្ចុប្បន្ន និងដាក់ជួរទទេ ១
+                document.getElementById('invDate').valueAsDate = new Date();
+                addRow();
+            }
+
+            // Load Logo
+            const savedLogo = localStorage.getItem('miiInvoiceLogo');
+            if (savedLogo && savedLogo.length > 100) {
+                const logo = document.getElementById('logoPreview');
+                logo.src = savedLogo;
+                logo.style.display = 'block';
+                document.getElementById('logoText').style.display = 'none';
+                logo.parentNode.style.border = 'none';
+                logo.parentNode.style.background = 'transparent';
+                document.getElementById('removeLogoBtn').style.display = 'flex';
+            }
+
+            // Load QR
+            const savedQR = localStorage.getItem('miiInvoiceQR');
+            if (savedQR && savedQR.length > 100) {
+                const qr = document.getElementById('qrPreview');
+                qr.src = savedQR;
+                qr.style.display = 'block';
+                document.getElementById('qrText').style.display = 'none';
+                qr.parentNode.style.border = 'none';
+                qr.parentNode.style.background = 'transparent';
+                document.getElementById('removeQrBtn').style.display = 'flex';
+            }
+
+            calculateTotal();
+        }
+
+        function clearData() {
+            if(confirm('តើអ្នកពិតជាចង់លុបទិន្នន័យនេះចោល ដើម្បីបង្កើតវិក្កយបត្រថ្មីមែនទេ?')) {
+                localStorage.removeItem('miiInvoiceData');
+                localStorage.removeItem('miiInvoiceLogo');
+                localStorage.removeItem('miiInvoiceQR');
+                location.reload(); // Refresh ទំព័រ
+            }
+        }
+
+        // ចាប់យកការវាយបញ្ចូលគ្រប់ពេល ដើម្បី Save ស្វ័យប្រវត្តិ
+        document.addEventListener('input', saveData);
+        document.addEventListener('change', saveData);
+
+        // ដំណើរការទាញទិន្នន័យពេលបើកវេបសាយដំបូង
+        window.onload = loadData;
+
+    </script>
 </body>
 </html>
